@@ -28,6 +28,7 @@ import net.splatcraft.forge.client.layer.InkOverlayLayer;
 import net.splatcraft.forge.client.layer.PlayerInkColoredSkinLayer;
 import net.splatcraft.forge.client.models.InkSquidModel;
 import net.splatcraft.forge.client.models.SquidBumperModel;
+import net.splatcraft.forge.client.models.TarpSquidModel;
 import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
 import net.splatcraft.forge.client.models.inktanks.ClassicInkTankModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankJrModel;
@@ -102,6 +103,7 @@ public class SplatcraftEntities {
     @SubscribeEvent
     public static void defineModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(InkSquidModel.LAYER_LOCATION, InkSquidModel::createBodyLayer);
+        event.registerLayerDefinition(TarpSquidModel.LAYER_LOCATION, TarpSquidModel::createBodyLayer);
         event.registerLayerDefinition(SquidBumperModel.LAYER_LOCATION, SquidBumperModel::createBodyLayer);
 
         event.registerLayerDefinition(SplatBombModel.LAYER_LOCATION, SplatBombModel::createBodyLayer);

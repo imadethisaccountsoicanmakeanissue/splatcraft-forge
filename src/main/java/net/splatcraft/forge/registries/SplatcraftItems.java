@@ -31,6 +31,7 @@ import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
 import net.splatcraft.forge.client.models.inktanks.ClassicInkTankModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankJrModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankModel;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.dispenser.PlaceBlockDispenseBehavior;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.items.*;
@@ -135,8 +136,8 @@ public class SplatcraftItems {
     //Ink Tanks
     public static final RegistryObject<InkTankItem> inkTank = REGISTRY.register("ink_tank", () -> new InkTankItem("ink_tank", 100));
     public static final RegistryObject<InkTankItem> classicInkTank = REGISTRY.register("classic_ink_tank", () -> new InkTankItem("classic_ink_tank", inkTank.get()));
-    public static final RegistryObject<InkTankItem> inkTankJr = REGISTRY.register("ink_tank_jr", () -> new InkTankItem("ink_tank_jr", 110));
-    public static final RegistryObject<InkTankItem> armoredInkTank = REGISTRY.register("armored_ink_tank", () -> new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK));
+    public static final RegistryObject<InkTankItem> inkTankJr = REGISTRY.register("ink_tank_jr", () -> new InkTankItem("ink_tank_jr", 20));
+    public static final RegistryObject<InkTankItem> armoredInkTank = REGISTRY.register("armored_ink_tank", () -> new InkTankItem("armored_ink_tank", 1000, ARMORED_INK_TANK));
 
     //Sub Weapons
     public static final RegistryObject<SubWeaponItem> splatBomb = REGISTRY.register("splat_bomb", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, "splat_bomb"));
@@ -224,8 +225,8 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> clearBand = REGISTRY.register("clear_ink_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
 
     public static final RegistryObject<Item> waxApplicator = REGISTRY.register("wax_applicator", InkWaxerItem::new);
-    public static final RegistryObject<Item> superJumpLure = REGISTRY.register("super_jump_lure", JumpLureItem::new);
-    public static final RegistryObject<Item> stagePad = REGISTRY.register("stage_pad", StagePadItem::new);
+    //public static final RegistryObject<Item> superJumpLure = REGISTRY.register("super_jump_lure", JumpLureItem::new);
+    //public static final RegistryObject<Item> stagePad = REGISTRY.register("stage_pad", StagePadItem::new);
 
     //Misc
 
@@ -331,7 +332,7 @@ public class SplatcraftItems {
         }
 
         for (InkTankItem tank : InkTankItem.inkTanks) {
-            ItemProperties.register(tank, inkProperty, (stack, level, entity, seed) -> InkTankItem.getInkAmount(stack) / tank.capacity);
+            ItemProperties.register(tank, inkProperty, (stack, level, entity, seed) -> entity == null ? 0 : Math.max(0, PlayerInfoCapability.get(entity).getStoredInk() - 100f) / tank.capacity);
         }
 
         for (DualieItem dualie : DualieItem.dualies) {

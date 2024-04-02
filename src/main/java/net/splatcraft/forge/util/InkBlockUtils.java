@@ -157,12 +157,15 @@ public class InkBlockUtils {
         return state.getCollisionShape(level, pos).isEmpty() || level.getBlockState(pos).is(SplatcraftTags.Blocks.INK_PASSTHROUGH);
     }
 
-    public static boolean canSquidHide(LivingEntity entity) {
-        return !entity.isSpectator() && (entity.isOnGround() || !entity.level.getBlockState(new BlockPos(entity.getX(), entity.getY() - 0.1, entity.getZ())).getBlock().equals(Blocks.AIR))
-                && canSquidSwim(entity) || canSquidClimb(entity);
+    public static boolean canSquidHide(LivingEntity entity)
+    {
+        return entity.level.getBlockState(entity.blockPosition()).is(SplatcraftBlocks.tarp.get()) || entity.level.getBlockState(entity.getOnPos()).is(SplatcraftBlocks.inkwell.get());
+        /*return !entity.isSpectator() && (entity.isOnGround() || !entity.level.getBlockState(new BlockPos(entity.getX(), entity.getY() - 0.1, entity.getZ())).getBlock().equals(Blocks.AIR))
+                && canSquidSwim(entity) || canSquidClimb(entity);*/
     }
 
-    public static boolean canSquidSwim(LivingEntity entity) {
+    public static boolean canSquidSwim(LivingEntity entity)
+    {
         boolean canSwim = false;
 
         BlockPos down = getBlockStandingOnPos(entity);

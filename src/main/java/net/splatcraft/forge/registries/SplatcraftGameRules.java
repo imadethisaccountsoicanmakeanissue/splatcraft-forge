@@ -38,10 +38,10 @@ public class SplatcraftGameRules {
     public static GameRules.Key<GameRules.IntegerValue> SUPERJUMP_DISTANCE_LIMIT;
 
     public static void registerGamerules() {
-        INK_DECAY = createBooleanRule("inkDecay", GameRules.Category.UPDATES, true);
-        INK_DECAY_RATE = createIntRule("inkDecayRate", GameRules.Category.UPDATES, 3);
+        INK_DECAY = createBooleanRule("inkDecay", GameRules.Category.UPDATES, false);
+        INK_DECAY_RATE = createIntRule("inkDecayRate", GameRules.Category.UPDATES, 3000);
         KEEP_MATCH_ITEMS = createBooleanRule("keepMatchItems", GameRules.Category.PLAYER, false);
-        UNIVERSAL_INK = createBooleanRule("universalInk", GameRules.Category.PLAYER, false);
+        UNIVERSAL_INK = createBooleanRule("universalInk", GameRules.Category.PLAYER, true);
         DROP_CRATE_LOOT = createBooleanRule("dropCrateLoot", GameRules.Category.DROPS, false);
         WATER_DAMAGE = createBooleanRule("waterDamage", GameRules.Category.PLAYER, false);
         REQUIRE_INK_TANK = createBooleanRule("requireInkTank", GameRules.Category.PLAYER, true);

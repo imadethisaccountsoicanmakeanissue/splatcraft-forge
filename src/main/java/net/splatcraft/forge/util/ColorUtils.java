@@ -328,7 +328,7 @@ public class ColorUtils
 
     public static int getRandomStarterColor()
     {
-        return DataHandler.InkColorTagsListener.STARTER_COLORS.getRandom(random);
+        return random.nextInt(0xFFFFFF);//DataHandler.InkColorTagsListener.STARTER_COLORS.getRandom(random);
     }
 
     public static void addInkSplashParticle(Level level, LivingEntity source, float size)

@@ -65,7 +65,7 @@ public class WeaponHandler {
 		boolean canUseWeapon = true;
 		//Vec3 prevPos = PlayerInfoCapability.get(player).getPrevPos();
 
-		if(PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).cancellable && PlayerInfoCapability.isSquid(player))
+		if(PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).cancellable && false)
 		{
 			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
 			ItemStack stack = cooldown.storedStack;

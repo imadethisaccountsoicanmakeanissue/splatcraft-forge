@@ -5,6 +5,7 @@ package net.splatcraft.forge.client.models;// Made with Blockbench 4.7.2
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 
 public class InkSquidModel extends EntityModel<LivingEntity> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -85,20 +87,20 @@ public class InkSquidModel extends EntityModel<LivingEntity> {
 	}
 
 	@Override
-	public void prepareMobModel(LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
+	public void prepareMobModel(LivingEntity entity, float limbSwing, float limbSwingAmount, float partialTickTime)
 	{
-		super.prepareMobModel(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
-		boolean isSwimming = entitylivingbaseIn.isSwimming();
+		super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTickTime);
+		boolean isSwimming = entity.isSwimming();
 
-		if (!entitylivingbaseIn.isPassenger())
+		if (!entity.isPassenger())
 		{
-			InkOverlayInfo info = InkOverlayCapability.get(entitylivingbaseIn);
+			InkOverlayInfo info = InkOverlayCapability.get(entity);
 
-			double angle = isSwimming ? -(entitylivingbaseIn.getXRot() * Math.PI / 180F) : Mth.lerp(partialTickTime, info.getSquidRotO(), info.getSquidRot()) * 1.1f;
+			double angle = isSwimming ? -(entity.getXRot() * Math.PI / 180F) : Mth.lerp(partialTickTime, info.getSquidRotO(), info.getSquidRot()) * 1.1f;
 			squid.xRot = (float) -Math.min(Math.PI / 2, Math.max(-Math.PI / 2, angle));
 		}
 
-		if (entitylivingbaseIn.isOnGround() || isSwimming)
+		if (entity.isOnGround() || isSwimming)
 		{
 			this.rightLimb.yRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / (isSwimming ? 2.2f : 1.5f);
 			this.leftLimb.yRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / (isSwimming ? 2.2f : 1.5f);
@@ -113,6 +115,19 @@ public class InkSquidModel extends EntityModel<LivingEntity> {
 				this.leftLimb.yRot -= leftLimb.yRot / 8f;
 			}
 		}
+
+		squid.y = 24;
+
+		if(PlayerInfoCapability.hasCapability(entity) && PlayerInfoCapability.get(entity).isUpsideDown())
+		{
+			squid.xRot *= -1;
+			squid.yRot *= -1;
+			squid.zRot = (float) (-Math.PI);
+			squid.y = 20;
+		}
+
+		if(!entity.equals(Minecraft.getInstance().player) && entity.isCrouching())
+			squid.y += 1;
 	}
 	
 	@Override

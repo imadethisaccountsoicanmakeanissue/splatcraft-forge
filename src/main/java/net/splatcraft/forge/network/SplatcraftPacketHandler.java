@@ -66,6 +66,8 @@ public class SplatcraftPacketHandler
         registerMessage(RequestClearInkPacket.class, RequestClearInkPacket::decode);
         registerMessage(RequestSetStageRulePacket.class, RequestSetStageRulePacket::decode);
 
+        registerMessage(NuhUhPacket.class, NuhUhPacket::decode);
+
     }
 
     private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<FriendlyByteBuf, MSG> decoder)

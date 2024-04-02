@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
@@ -357,13 +358,12 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
             level.broadcastEntityEvent(this, (byte) -1);
         }
 
-        if (target instanceof LivingEntity livingTarget) {
-            if (InkDamageUtils.isSplatted(livingTarget)) return;
+        if (target instanceof LivingEntity livingTarget && InkDamageUtils.isSplatted(livingTarget))
+            return;
 
-            if (InkDamageUtils.doDamage(level, livingTarget, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) &&
-                    InkDamageUtils.isSplatted(livingTarget) && charge >= 1.0f && getOwner() instanceof ServerPlayer)
-                ((ServerPlayer) getOwner()).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
-        }
+        if (InkDamageUtils.doDamage(level, target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) &&
+                (target instanceof LivingEntity livingTarget) && InkDamageUtils.isSplatted(livingTarget) && charge >= 1.0f && getOwner() instanceof ServerPlayer)
+            ((ServerPlayer) getOwner()).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 
         if (!canPierce) {
             if (explodes) {

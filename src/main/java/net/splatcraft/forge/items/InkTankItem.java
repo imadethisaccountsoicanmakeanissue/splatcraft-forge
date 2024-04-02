@@ -1,12 +1,8 @@
 package net.splatcraft.forge.items;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -30,13 +26,13 @@ import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.PlayerCharge;
-import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.SplatcraftArmorMaterial;
+import net.splatcraft.forge.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class InkTankItem extends ColoredArmorItem {
     public static final ArrayList<InkTankItem> inkTanks = new ArrayList<>();
@@ -73,11 +69,14 @@ public class InkTankItem extends ColoredArmorItem {
 
     public static float getInkAmount(ItemStack stack)
     {
-        if(!(stack.getItem() instanceof InkTankItem inkTankItem))
             return 0;
+
+        /*
         float capacity = inkTankItem.capacity;
         if (stack.getOrCreateTag().getBoolean("InfiniteInk")) return capacity;
         return Math.max(0, Math.min(capacity, stack.getOrCreateTag().getFloat("Ink")));
+        */
+
     }
 
     public static void setInkAmount(ItemStack stack, float value) {
@@ -85,13 +84,13 @@ public class InkTankItem extends ColoredArmorItem {
     }
 
     public static boolean canRecharge(ItemStack stack, boolean fromTick) {
-        CompoundTag tag = stack.getOrCreateTag();
+        /*CompoundTag tag = stack.getOrCreateTag();
         boolean cannotRecharge = tag.contains("CannotRecharge");
         if (!tag.contains("RecoveryCooldown"))
             tag.putInt("RecoveryCooldown", 0);
         int cooldown = tag.getInt("RecoveryCooldown");
         if (cooldown == 0 || !fromTick) return !cannotRecharge;
-        tag.putInt("RecoveryCooldown", --cooldown);
+        tag.putInt("RecoveryCooldown", --cooldown);*/
         return false;
     }
 
@@ -184,7 +183,7 @@ public class InkTankItem extends ColoredArmorItem {
                         model.rightArmPose = _default.rightArmPose;
                         model.leftArmPose = _default.leftArmPose;
 
-                        model.setInkLevels(InkTankItem.getInkAmount(itemStack) / ((InkTankItem) itemStack.getItem()).capacity);
+                        model.setInkLevels(Math.max(0, PlayerInfoCapability.get(entityLiving).getStoredInk() - 100f) / ((InkTankItem) itemStack.getItem()).capacity);
 
                         return model;
                     }

@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -47,6 +48,7 @@ import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.layer.PlayerInkColoredSkinLayer;
 import net.splatcraft.forge.client.renderer.InkSquidRenderer;
+import net.splatcraft.forge.client.renderer.TarpSquidRenderer;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
@@ -87,6 +89,7 @@ public class RendererHandler
 
 
     private static InkSquidRenderer squidRenderer;
+    private static TarpSquidRenderer tarpRenderer;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void playerRender(RenderPlayerEvent event)
@@ -96,15 +99,18 @@ public class RendererHandler
         Player player = event.getPlayer();
         if (player.isSpectator()) return;
 
-        if (PlayerInfoCapability.isSquid(player))
+        //if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.isSquid(player)) steve has been deleted :)
         {
             event.setCanceled(true);
             if (squidRenderer == null)
                 squidRenderer = new InkSquidRenderer(InkSquidRenderer.getContext());
+            if (tarpRenderer == null)
+                tarpRenderer = new TarpSquidRenderer(InkSquidRenderer.getContext());
             if (!InkBlockUtils.canSquidHide(player))
             {
-                squidRenderer.render(player, player.yHeadRot, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
-                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+                LivingEntityRenderer<LivingEntity, ?> renderer = PlayerInfoCapability.get(player).isTarp() ? tarpRenderer : squidRenderer;
+                renderer.render(player, player.yHeadRot, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, renderer, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
             }
         }
 
@@ -138,7 +144,7 @@ public class RendererHandler
     public static void renderHand(RenderHandEvent event)
     {
         Player player = Minecraft.getInstance().player;
-        if (PlayerInfoCapability.isSquid(player))
+        if (true/*PlayerInfoCapability.isSquid(player)*/)
         {
             event.setCanceled(true);
             return;
@@ -415,17 +421,17 @@ public class RendererHandler
 
         boolean showCrosshairInkIndicator = SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR);
         boolean isHoldingMatchItem = player.getMainHandItem().is(SplatcraftTags.Items.MATCH_ITEMS) || player.getOffhandItem().is(SplatcraftTags.Items.MATCH_ITEMS);
-        boolean showLowInkWarning = showCrosshairInkIndicator && SplatcraftConfig.Client.lowInkWarning.get() && (isHoldingMatchItem || info.isSquid()) && !enoughInk(player, null, 10f, 0, false);
+        boolean showLowInkWarning = false;//showCrosshairInkIndicator && SplatcraftConfig.Client.lowInkWarning.get() && (isHoldingMatchItem || info.isSquid()) && !enoughInk(player, null, 10f, 0, false);
 
         boolean canUse = true;
         boolean hasTank = player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof InkTankItem;
-        float inkPctg = 0;
-        if (hasTank) {
+        float inkPctg = info.getStoredInk() / info.getMaxInk(player);
+        /*if (hasTank) {
             ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
             inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
             if (isHoldingMatchItem)
                 canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
-        }
+        }*/
         if (info.isSquid() || showLowInkWarning || !canUse) {
             //if (event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
             {

@@ -51,7 +51,7 @@ public class SquidFormHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingHurt(LivingHurtEvent event) {
-        if (InkDamageUtils.ENEMY_INK.equals(event.getSource()) && event.getEntityLiving().getHealth() <= 4)
+        if (event.getEntityLiving() instanceof Player && InkDamageUtils.ENEMY_INK.equals(event.getSource()) && event.getEntityLiving().getHealth() <= 4)
             event.setCanceled(true);
     }
 
@@ -105,7 +105,7 @@ public class SquidFormHandler {
             }
 
             player.setPose(Pose.SWIMMING);
-            player.stopUsingItem();
+            //player.stopUsingItem();
 
             player.awardStat(SplatcraftStats.SQUID_TIME);
 
@@ -157,7 +157,7 @@ public class SquidFormHandler {
     {
         if(event.getEntityLiving() instanceof ServerPlayer player && PlayerInfoCapability.get(player).isSquid())
         {
-            if(InkBlockUtils.canSquidHide(player))
+            if(InkBlockUtils.canSquidSwim(player))
             {
                 SplatcraftStats.FALL_INTO_INK_TRIGGER.trigger(player, event.getDistance());
                 event.setCanceled(true);
@@ -199,7 +199,7 @@ public class SquidFormHandler {
         SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerSetSquidS2CPacket(event.getPlayer().getUUID(), false), event.getPlayer());
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void playerBreakSpeed(PlayerEvent.BreakSpeed event) {
         if (PlayerInfoCapability.isSquid(event.getPlayer())) {
             event.setCanceled(true);
@@ -212,8 +212,9 @@ public class SquidFormHandler {
             event.setCanceled(true);
     }
 
-    @SubscribeEvent
-    public static void onPlayerInteract(PlayerInteractEvent event) {
+    //@SubscribeEvent
+    public static void onPlayerInteract(PlayerInteractEvent event)
+    {
         if (PlayerInfoCapability.isSquid(event.getPlayer()) && event.isCancelable()) {
             event.setCanceled(true);
         }

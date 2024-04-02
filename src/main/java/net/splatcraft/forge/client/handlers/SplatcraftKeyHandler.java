@@ -42,7 +42,7 @@ public class SplatcraftKeyHandler {
 
     private static ToggleableKey fireKey;
     private static int autoSquidDelay = 0; //delays automatically returning into squid form after firing for balancing reasons and to allow packet-based weapons to fire (chargers and splatlings)
-    private static ToggleableKey squidKey;
+    public static ToggleableKey squidKey;
     private static ToggleableKey subWeaponHotkey;
 
     private static int slot = -1;
@@ -63,10 +63,10 @@ public class SplatcraftKeyHandler {
         return subWeaponHotkey.active;
     }
     public static boolean isSquidKeyDown() {
-        return !pressState.isEmpty() && Iterables.getLast(pressState).equals(squidKey);
+        return squidKey.key.isDown(); //!pressState.isEmpty() && Iterables.getLast(pressState).equals(squidKey);
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event)
     {
         Minecraft mc = Minecraft.getInstance();

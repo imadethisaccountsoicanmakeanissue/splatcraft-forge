@@ -8,6 +8,7 @@ import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -69,12 +70,15 @@ public class InkDamageUtils {
         return SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(level, pos, targetColor, sourceColor);
     }
 
-    public static boolean doDamage(Level level, LivingEntity target, float damage, int color, Entity source, Entity directSource, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown)
+    public static boolean doDamage(Level level, Entity target, float damage, int color, Entity source, Entity directSource, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown)
     {
+        boolean isLiving = target instanceof LivingEntity;
+        LivingEntity livingTarget = isLiving ? (LivingEntity) target : null;
+
         //Negate ink damage when super jumping
-        if(PlayerInfoCapability.hasCapability(target))
+        if(isLiving && PlayerInfoCapability.hasCapability(livingTarget))
         {
-            PlayerInfo info = PlayerInfoCapability.get(target);
+            PlayerInfo info = PlayerInfoCapability.get(livingTarget);
             if(info.hasPlayerCooldown() && info.getPlayerCooldown() instanceof SuperJumpCommand.SuperJump)
                 return false;
         }
@@ -83,7 +87,7 @@ public class InkDamageUtils {
         if (damage <= 0 || (target.isInvulnerableTo(damageSource) && !(target instanceof SquidBumperEntity)))
             return false;
 
-        if(InkOverlayCapability.hasCapability(target) && InkOverlayCapability.get(target).isInkproof())
+        if(isLiving && InkOverlayCapability.hasCapability(livingTarget) && InkOverlayCapability.get(livingTarget).isInkproof())
             return false;
 
         float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
@@ -99,17 +103,17 @@ public class InkDamageUtils {
         if (target instanceof IColoredEntity) {
             target.invulnerableTime = (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN)) ? 1 : 20;
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
-        } else if (target instanceof Sheep) {
-            if (!((Sheep) target).isSheared()) {
+        } else if (target instanceof Sheep sheep) {
+            if (!sheep.isSheared()) {
                 doDamage = false;
                 canInk = false;
                 targetColor = 1;
 
-                InkOverlayInfo info = InkOverlayCapability.get(target);
+                InkOverlayInfo info = InkOverlayCapability.get(sheep);
 
                 info.setWoolColor(color);
                 if (!level.isClientSide)
-                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
+                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(sheep, info));
             }
         }
 
@@ -121,20 +125,20 @@ public class InkDamageUtils {
         }
 
         if ((targetColor <= -1 || canInk) && !target.isInWater() && !(target instanceof IColoredEntity && !((IColoredEntity) target).handleInkOverlay())) {
-            if (InkOverlayCapability.hasCapability(target))
+            if (isLiving && InkOverlayCapability.hasCapability(livingTarget))
             {
-                InkOverlayInfo info = InkOverlayCapability.get(target);
-                if (info.getAmount() < target.getMaxHealth() * 1.5)
+                InkOverlayInfo info = InkOverlayCapability.get(livingTarget);
+                if (info.getAmount() < livingTarget.getMaxHealth() * 1.5)
                     info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
                 info.setColor(color);
                 if (!level.isClientSide)
-                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
+                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(livingTarget, info));
 
             }
         }
 
-        if (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
-            target.hurtTime = 1;
+        if (isLiving && !applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
+            livingTarget.hurtTime = 1;
 
         return doDamage;
     }
