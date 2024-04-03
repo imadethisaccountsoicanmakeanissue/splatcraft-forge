@@ -1,5 +1,6 @@
 package net.splatcraft.forge.tileentities;
 
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -10,15 +11,12 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.blocks.InkVatBlock;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
-import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.RelativeBlockPos;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class InkedBlockTileEntity extends InkColorTileEntity
 {
@@ -45,8 +43,9 @@ public class InkedBlockTileEntity extends InkColorTileEntity
             if(inkedBlock.hasSavedState())
             {
                 level.setBlock(pos, inkedBlock.savedState, 2);
-                if(inkedBlock.hasPermanentColor())
-                    WorldInkCapability.get(level, pos).setPermanentInk(pos, inkedBlock.getPermanentColor(), inkedBlock.getPermanentInkType());
+                if (inkedBlock.hasPermanentColor()) {
+                    WorldInkCapability.get(level, pos).setPermanentInk(RelativeBlockPos.fromAbsolute(pos), inkedBlock.getPermanentColor(), inkedBlock.getPermanentInkType());
+                }
                 InkBlockUtils.inkBlock(level, pos, inkedBlock.getColor(), 0, getInkType(state));
 
                 if (inkedBlock.hasSavedColor() && inkedBlock.getSavedState().getBlock() instanceof IColoredBlock coloredBlock)

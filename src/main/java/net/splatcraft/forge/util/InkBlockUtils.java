@@ -4,7 +4,6 @@ import java.util.HashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,7 +34,6 @@ import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class InkBlockUtils {
@@ -52,17 +50,25 @@ public class InkBlockUtils {
     public static boolean clearInk(Level level, BlockPos pos, boolean removePermanent)
     {
         WorldInk worldInk = WorldInkCapability.get(level, pos);
-        if(worldInk.isInked(pos))
+        RelativeBlockPos relative = RelativeBlockPos.fromAbsolute(pos);
+        if (worldInk.isInked(relative))
         {
-            boolean removed = worldInk.clearInk(pos);
-            if((removePermanent && worldInk.removePermanentInk(pos)))
-                removed = true;
+            boolean update = worldInk.removeInk(relative) != WorldInk.BlockClearResult.FAIL;
+            if (removePermanent && worldInk.removePermanentInk(relative)) {
+                update = true;
+            }
 
-            if(removed)
+            if (update)
             {
                 level.getChunkAt(pos).setUnsaved(true);
-                if (!level.isClientSide)
-                    SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, -1, null), level.dimension());
+                if (!level.isClientSide) {
+                    WorldInk.Entry newInk = worldInk.getInk(relative);
+                    if (newInk != null) {
+                        SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, newInk.color(), newInk.type()), level.dimension());
+                    } else {
+                        SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, -1, null), level.dimension());
+                    }
+                }
                 return true;
             }
         }
@@ -90,13 +96,15 @@ public class InkBlockUtils {
             return BlockInkedResult.FAIL;
 
         WorldInk worldInk = WorldInkCapability.get(level, pos);
+        RelativeBlockPos relative = RelativeBlockPos.fromAbsolute(pos);
+        WorldInk.Entry ink = worldInk.getInk(relative);
 
-        boolean sameColor = worldInk.isInked(pos) && worldInk.getInk(pos).color() == color;
+        boolean sameColor = ink != null && ink.color() == color;
 
-        if(sameColor && worldInk.getInk(pos).type() == inkType)
+        if (sameColor && ink.type() == inkType)
             return BlockInkedResult.ALREADY_INKED;
 
-        worldInk.ink(pos, color, inkType);
+        worldInk.setInk(relative, color, inkType);
         level.getChunkAt(pos).setUnsaved(true);
 
         if(SplatcraftGameRules.getLocalizedRule(level, pos.above(), SplatcraftGameRules.INK_DESTROYS_FOLIAGE) &&
@@ -107,6 +115,29 @@ public class InkBlockUtils {
             SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, color, inkType), level.dimension());
 
         return sameColor ? BlockInkedResult.ALREADY_INKED : BlockInkedResult.SUCCESS;
+    }
+
+    public static BlockInkedResult permanentInk(Level level, BlockPos pos) {
+        WorldInk worldInk = WorldInkCapability.get(level, pos);
+        RelativeBlockPos relative = RelativeBlockPos.fromAbsolute(pos);
+
+        if (worldInk.getPermanentInk(relative) != null) {
+            return BlockInkedResult.ALREADY_INKED;
+        }
+
+        WorldInk.Entry ink = worldInk.getInk(relative);
+        if (ink == null) {
+            return BlockInkedResult.FAIL;
+        }
+
+        worldInk.setPermanentInk(relative, ink.color(), ink.type());
+        level.getChunkAt(pos).setUnsaved(true);
+
+        if (!level.isClientSide) {
+            SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, ink.color(), ink.type()), level.dimension());
+        }
+
+        return BlockInkedResult.SUCCESS;
     }
 
     public static boolean isBlockFoliage(BlockState state)
@@ -120,12 +151,12 @@ public class InkBlockUtils {
 
     public static WorldInk.Entry getInk(Level level, BlockPos pos)
     {
-        return WorldInkCapability.get(level, pos).getInk(pos);
+        return WorldInkCapability.get(level, pos).getInk(RelativeBlockPos.fromAbsolute(pos));
     }
 
     public static boolean isInked(Level level, BlockPos pos)
     {
-        return WorldInkCapability.get(level, pos).isInked(pos);
+        return WorldInkCapability.get(level, pos).isInked(RelativeBlockPos.fromAbsolute(pos));
     }
 
     public static boolean canInkFromFace(Level level, BlockPos pos, Direction face) {

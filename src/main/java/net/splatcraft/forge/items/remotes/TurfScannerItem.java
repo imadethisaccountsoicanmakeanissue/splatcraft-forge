@@ -1,5 +1,8 @@
 package net.splatcraft.forge.items.remotes;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -13,7 +16,6 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
-import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
@@ -21,10 +23,6 @@ import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class TurfScannerItem extends RemoteItem
 {
@@ -65,11 +63,11 @@ public class TurfScannerItem extends RemoteItem
                     blockTotal++;
 
                     int color = -1;
-                    WorldInk worldInk = WorldInkCapability.get(level, checkPos);
+                    WorldInk.Entry ink = InkBlockUtils.getInk(level, checkPos);
 
-                    if(worldInk.isInked(checkPos))
-                        color = worldInk.getInk(checkPos).color();
-                    else if (level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED) &&
+                    if (ink != null) {
+                        color = ink.color();
+                    } else if (level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED) &&
                             level.getBlockState(checkPos).getBlock() instanceof IColoredBlock coloredBlock)
                         color = coloredBlock.getColor(level, checkPos);
 
@@ -117,11 +115,11 @@ public class TurfScannerItem extends RemoteItem
                         blockTotal++;
 
                         int color = -1;
-                        WorldInk worldInk = WorldInkCapability.get(level, checkPos);
+                        WorldInk.Entry ink = InkBlockUtils.getInk(level, checkPos);
 
-                        if(worldInk.isInked(checkPos))
-                            color = worldInk.getInk(checkPos).color();
-                        else if (level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED) &&
+                        if (ink != null) {
+                            color = ink.color();
+                        } else if (level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED) &&
                                 level.getBlockState(checkPos).getBlock() instanceof IColoredBlock coloredBlock)
                             color = coloredBlock.getColor(level, checkPos);
 

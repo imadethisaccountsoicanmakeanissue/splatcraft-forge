@@ -4,7 +4,6 @@ import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
@@ -12,23 +11,36 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.RelativeBlockPos;
 
 public class UpdateInkPacket extends PlayS2CPacket
 {
 	private final ChunkPos chunkPos;
-	private final HashMap<BlockPos, WorldInk.Entry> dirty;
+	private final HashMap<RelativeBlockPos, WorldInk.Entry> dirty;
 
 	public UpdateInkPacket(BlockPos pos, int color, InkBlockUtils.InkType type)
 	{
 		chunkPos = new ChunkPos(pos);
 		this.dirty = new HashMap<>();
-		dirty.put(new BlockPos(SectionPos.sectionRelative(pos.getX()), pos.getY(), SectionPos.sectionRelative(pos.getZ())), new WorldInk.Entry(color, type));
+		dirty.put(RelativeBlockPos.fromAbsolute(pos), new WorldInk.Entry(color, type));
 	}
 
-	public UpdateInkPacket(ChunkPos pos, HashMap<BlockPos, WorldInk.Entry> dirty)
+	public UpdateInkPacket(ChunkPos pos, HashMap<RelativeBlockPos, WorldInk.Entry> dirty)
 	{
 		this.chunkPos = pos;
 		this.dirty = dirty;
+	}
+
+	public static UpdateInkPacket decode(FriendlyByteBuf buffer)
+	{
+		ChunkPos pos = buffer.readChunkPos();
+		HashMap<RelativeBlockPos, WorldInk.Entry> dirty = new HashMap<>();
+		int size = buffer.readInt();
+		for (int i = 0; i < size; i++) {
+			dirty.put(RelativeBlockPos.fromBuf(buffer), new WorldInk.Entry(buffer.readInt(), InkBlockUtils.InkType.values.getOrDefault(buffer.readResourceLocation(), null)));
+		}
+
+		return new UpdateInkPacket(pos, dirty);
 	}
 
 	@Override
@@ -39,21 +51,10 @@ public class UpdateInkPacket extends PlayS2CPacket
 
 		dirty.forEach((pos, entry) ->
 		{
-			buffer.writeBlockPos(pos);
+			pos.writeBuf(buffer);
 			buffer.writeInt(entry.color());
 			buffer.writeResourceLocation(entry.type() == null ? new ResourceLocation("") : entry.type().getName());
 		});
-	}
-
-	public static UpdateInkPacket decode(FriendlyByteBuf buffer)
-	{
-		ChunkPos pos = buffer.readChunkPos();
-		HashMap<BlockPos, WorldInk.Entry> dirty = new HashMap<>();
-		int size = buffer.readInt();
-		for(int i = 0; i < size; i++)
-			dirty.put(buffer.readBlockPos(), new WorldInk.Entry(buffer.readInt(), InkBlockUtils.InkType.values.getOrDefault(buffer.readResourceLocation(), null)));
-
-		return new UpdateInkPacket(pos, dirty);
 	}
 
 	@Override
@@ -68,15 +69,15 @@ public class UpdateInkPacket extends PlayS2CPacket
 			dirty.forEach((pos, entry) ->
 			{
 				if (entry == null || entry.type() == null) {
-					worldInk.clearInk(pos);
+					worldInk.removeInk(pos);
 				} else {
-					worldInk.ink(pos, entry.color(), entry.type());
+					worldInk.setInk(pos, entry.color(), entry.type());
 				}
 
 
-				pos = new BlockPos(pos.getX() + chunkPos.x * 16, pos.getY(), pos.getZ() + chunkPos.z * 16);
-				BlockState state = level.getBlockState(pos);
-				level.sendBlockUpdated(pos, state, state, 0);
+				BlockPos blockPos = pos.toAbsolute(chunkPos);
+				BlockState state = level.getBlockState(blockPos);
+				level.sendBlockUpdated(blockPos, state, state, 0);
 			});
 		}
 

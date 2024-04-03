@@ -24,7 +24,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
-import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.handlers.WorldInkHandler;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -77,10 +76,9 @@ public class BlockRenderMixin
 				target = "Lnet/minecraft/client/renderer/ItemBlockRenderTypes;canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z"))
 		public boolean canRenderInLayer(BlockState state, RenderType type, Operation<Boolean> original)
 		{
-			if(WorldInkCapability.get(splatcraft$level, splatcraft$blockPos).isInked(splatcraft$blockPos))
+			WorldInk.Entry ink = InkBlockUtils.getInk(splatcraft$level, splatcraft$blockPos);
+			if (ink != null)
 			{
-				WorldInk.Entry ink = WorldInkCapability.get(splatcraft$level, splatcraft$blockPos).getInk(splatcraft$blockPos);
-
 				if(ink.type() == InkBlockUtils.InkType.GLOWING)
 					return type == RenderType.translucent();
 				else if(ink.type() == InkBlockUtils.InkType.NORMAL)

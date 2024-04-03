@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
-import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.handlers.WorldInkHandler;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.util.ColorUtils;
@@ -50,9 +49,9 @@ public class SodiumMixin
 				                                light, ChunkModelBuilder model, Operation < Void > original)
 		{
 			if (world instanceof WorldSlice worldSlice) {
-				WorldInk worldInk = WorldInkCapability.get(((WorldSliceAccessor) worldSlice).getWorld(), pos);
-				if (worldInk.isInked(pos)) {
-					WorldInk.Entry ink = worldInk.getInk(pos);
+				WorldInk.Entry ink = InkBlockUtils.getInk(((WorldSliceAccessor) worldSlice).getWorld(), pos);
+
+				if (ink != null) {
 					float[] rgb = ColorUtils.hexToRGB(ink.color());
 					int color = ColorABGR.pack(rgb[0], rgb[1], rgb[2]);
 
