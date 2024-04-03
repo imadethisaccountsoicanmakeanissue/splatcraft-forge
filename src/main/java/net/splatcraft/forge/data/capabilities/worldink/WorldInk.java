@@ -144,17 +144,5 @@ public class WorldInk
 
 	public record Entry(int color, InkBlockUtils.InkType type)
 	{
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			Entry entry = (Entry) o;
-			return color == entry.color && Objects.equals(type, entry.type);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(color, type);
-		}
 	}
 }
