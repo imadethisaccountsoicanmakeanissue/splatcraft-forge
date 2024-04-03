@@ -53,10 +53,10 @@ public class InkBlockUtils {
         RelativeBlockPos relative = RelativeBlockPos.fromAbsolute(pos);
         if (worldInk.isInked(relative))
         {
-            boolean update = worldInk.removeInk(relative) != WorldInk.BlockClearResult.FAIL;
-            if (removePermanent && worldInk.removePermanentInk(relative)) {
-                update = true;
+            if (removePermanent) {
+                worldInk.removePermanentInk(relative);
             }
+            boolean update = worldInk.removeInk(relative) != WorldInk.BlockClearResult.FAIL;
 
             if (update)
             {
