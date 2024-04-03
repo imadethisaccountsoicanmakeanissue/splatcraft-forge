@@ -130,10 +130,9 @@ public class InkBlockUtils {
             return BlockInkedResult.FAIL;
         }
 
-        worldInk.setPermanentInk(relative, ink.color(), ink.type());
-        level.getChunkAt(pos).setUnsaved(true);
-
         if (!level.isClientSide) {
+            worldInk.setPermanentInk(relative, ink.color(), ink.type());
+            level.getChunkAt(pos).setUnsaved(true);
             SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, ink.color(), ink.type()), level.dimension());
         }
 
