@@ -109,10 +109,9 @@ public class SplatcraftCommonHandler {
         }
 
         Player player = event.getPlayer();
+
         event.getOriginal().reviveCaps(); // Mod devs should not have to do this
         PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundTag()));
-        event.getOriginal().invalidateCaps();
-
         event.getOriginal().invalidateCaps();
 
         NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
