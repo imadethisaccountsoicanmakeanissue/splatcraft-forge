@@ -30,7 +30,7 @@ credits = '''
 
 logoFile = "pack.png"
 
-version = "${file.jarVersion}"
+version = "${version}"
 updateJSONURL = "https://api.modrinth.com/updates/splatcraft/forge_updates.json"
 
 displayURL = "https://curseforge.com/minecraft/mc-mods/splatcraft"
