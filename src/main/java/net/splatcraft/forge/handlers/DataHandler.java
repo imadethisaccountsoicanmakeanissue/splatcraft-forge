@@ -4,6 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.stream.StreamSupport;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -15,14 +23,18 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.items.weapons.settings.*;
+import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.BlasterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.DualieWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ShooterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SlosherWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateWeaponSettingsPacket;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.StreamSupport;
 
 @Mod.EventBusSubscriber
 public class DataHandler
@@ -168,7 +180,7 @@ public class DataHandler
 						return;
 
 					AbstractWeaponSettings<?, ?> settings = SETTING_TYPES.get(type).getConstructor(String.class).newInstance(key.toString());
-					settings.getCodec().parse(JsonOps.INSTANCE, json).resultOrPartial(msg -> System.out.println("Failed to load weapon settings for " + key + ": " + msg)).ifPresent(
+					settings.getCodec().parse(JsonOps.INSTANCE, json).resultOrPartial(msg -> Splatcraft.LOGGER.error("Failed to load weapon settings for %s: %s".formatted(key, msg))).ifPresent(
 							settings::castAndDeserialize
 					);
 

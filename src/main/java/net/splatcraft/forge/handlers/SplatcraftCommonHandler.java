@@ -40,6 +40,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.client.layer.PlayerInkColoredSkinLayer;
@@ -259,7 +260,7 @@ public class SplatcraftCommonHandler {
             try {
                 SplatcraftPacketHandler.sendToServer(new SendPlayerOverlayPacket(player.getUUID(), file));
             } catch (IOException e) {
-                e.printStackTrace(System.out);
+                Splatcraft.LOGGER.error("Could not send player overlay packet", e);
             }
         }
     }
