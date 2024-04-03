@@ -1,17 +1,15 @@
 package net.splatcraft.forge.data.capabilities.worldink;
 
+import java.util.HashMap;
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.util.InkBlockUtils;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
 
 
 /*  TODO
@@ -124,10 +122,9 @@ public class WorldInk
 
 	protected BlockPos localizeBlockPos(BlockPos pos)
 	{
-
-		return new BlockPos(Math.floorMod(pos.getX(), 16), pos.getY(), Math.floorMod(pos.getZ(), 16));
+		return new BlockPos(SectionPos.sectionRelative(pos.getX()), pos.getY(), SectionPos.sectionRelative(pos.getZ()));
 	}
-	
+
 	public void readNBT(CompoundTag nbt)
 	{
 		PERMANENT_INK_MAP.clear();
@@ -143,7 +140,6 @@ public class WorldInk
 			CompoundTag element = (CompoundTag) tag;
 			ink(NbtUtils.readBlockPos(element.getCompound("Pos")), element.getInt("Color"), InkBlockUtils.InkType.values.get(new ResourceLocation(element.getString("Type"))));
 		});
-
 	}
 
 	public record Entry(int color, InkBlockUtils.InkType type)
