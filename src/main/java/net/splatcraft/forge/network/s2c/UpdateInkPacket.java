@@ -64,7 +64,8 @@ public class UpdateInkPacket extends PlayS2CPacket
 
 		if(level != null)
 		{
-            WorldInk worldInk = WorldInkCapability.get(level, chunkPos);
+            // the dedicated server will crash if you pass the level and pos directly. wow.
+            WorldInk worldInk = WorldInkCapability.get(level.getChunk(chunkPos.x, chunkPos.z));
 
 			dirty.forEach((pos, entry) ->
 			{
