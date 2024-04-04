@@ -131,8 +131,9 @@ public class WorldInkHandler
 		if(event.getChunk() instanceof LevelChunk chunk)
 		{
 			WorldInk worldInk = WorldInkCapability.get(chunk);
-			if(!worldInk.getInkInChunk().isEmpty())
-				SplatcraftPacketHandler.sendToDim(new WatchInkPacket(chunk.getPos(), worldInk.getInkInChunk()), chunk.getLevel().dimension());
+            if (!worldInk.getInkInChunk().isEmpty()) {
+                SplatcraftPacketHandler.sendToTrackers(new WatchInkPacket(chunk.getPos(), worldInk.getInkInChunk()), chunk);
+            }
 		}
 	}
 

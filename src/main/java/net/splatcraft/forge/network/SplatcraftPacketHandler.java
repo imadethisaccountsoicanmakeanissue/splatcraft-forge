@@ -1,22 +1,54 @@
 package net.splatcraft.forge.network;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.network.c2s.*;
-import net.splatcraft.forge.network.s2c.*;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import net.splatcraft.forge.network.c2s.CraftWeaponPacket;
+import net.splatcraft.forge.network.c2s.CreateOrEditStagePacket;
+import net.splatcraft.forge.network.c2s.DodgeRollPacket;
+import net.splatcraft.forge.network.c2s.PlayerSetSquidC2SPacket;
+import net.splatcraft.forge.network.c2s.ReleaseChargePacket;
+import net.splatcraft.forge.network.c2s.RequestClearInkPacket;
+import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
+import net.splatcraft.forge.network.c2s.RequestSetStageRulePacket;
+import net.splatcraft.forge.network.c2s.RequestTurfScanPacket;
+import net.splatcraft.forge.network.c2s.RequestUpdateStageSpawnPadsPacket;
+import net.splatcraft.forge.network.c2s.RequestWarpDataPacket;
+import net.splatcraft.forge.network.c2s.SendPlayerOverlayPacket;
+import net.splatcraft.forge.network.c2s.SuperJumpToStagePacket;
+import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
+import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
+import net.splatcraft.forge.network.c2s.UpdateChargeStatePacket;
+import net.splatcraft.forge.network.c2s.UseJumpLurePacket;
+import net.splatcraft.forge.network.s2c.NotifyStageCreatePacket;
+import net.splatcraft.forge.network.s2c.PlayerColorPacket;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
+import net.splatcraft.forge.network.s2c.ReceivePlayerOverlayPacket;
+import net.splatcraft.forge.network.s2c.SendJumpLureDataPacket;
+import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
+import net.splatcraft.forge.network.s2c.SendStageWarpDataToPadPacket;
+import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
+import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
+import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
+import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
+import net.splatcraft.forge.network.s2c.UpdateInkPacket;
+import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
+import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
+import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
+import net.splatcraft.forge.network.s2c.UpdateWeaponSettingsPacket;
+import net.splatcraft.forge.network.s2c.WatchInkPacket;
 
 public class SplatcraftPacketHandler
 {
@@ -84,6 +116,10 @@ public class SplatcraftPacketHandler
 
     public static <MSG> void sendToDim(MSG message, ResourceKey<Level> level) {
         INSTANCE.send(PacketDistributor.DIMENSION.with(() -> level), message);
+    }
+
+    public static <MSG> void sendToTrackers(MSG message, LevelChunk trackedChunk) {
+        INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> trackedChunk), message);
     }
 
     public static <MSG> void sendToTrackers(MSG message, Entity trackedEntity) {
