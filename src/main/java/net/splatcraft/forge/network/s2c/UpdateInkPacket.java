@@ -64,7 +64,7 @@ public class UpdateInkPacket extends PlayS2CPacket
 
 		if(level != null)
 		{
-			WorldInk worldInk = WorldInkCapability.get(level.getChunk(chunkPos.x, chunkPos.z));
+            WorldInk worldInk = WorldInkCapability.get(level, chunkPos);
 
 			dirty.forEach((pos, entry) ->
 			{

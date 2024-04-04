@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -49,7 +50,8 @@ public class InkBlockUtils {
 
     public static boolean clearInk(Level level, BlockPos pos, boolean removePermanent)
     {
-        WorldInk worldInk = WorldInkCapability.get(level, pos);
+        LevelChunk chunk = level.getChunkAt(pos);
+        WorldInk worldInk = WorldInkCapability.get(chunk);
         RelativeBlockPos relative = RelativeBlockPos.fromAbsolute(pos);
         if (worldInk.isInked(relative))
         {
@@ -60,13 +62,13 @@ public class InkBlockUtils {
 
             if (update)
             {
-                level.getChunkAt(pos).setUnsaved(true);
+                chunk.setUnsaved(true);
                 if (!level.isClientSide) {
                     WorldInk.Entry newInk = worldInk.getInk(relative);
                     if (newInk != null) {
-                        SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, newInk.color(), newInk.type()), level.getChunkAt(pos));
+                        SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, newInk.color(), newInk.type()), chunk);
                     } else {
-                        SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, -1, null), level.getChunkAt(pos));
+                        SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, -1, null), chunk);
                     }
                 }
                 return true;
@@ -95,7 +97,8 @@ public class InkBlockUtils {
         if (!SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
             return BlockInkedResult.FAIL;
 
-        WorldInk worldInk = WorldInkCapability.get(level, pos);
+        LevelChunk chunk = level.getChunkAt(pos);
+        WorldInk worldInk = WorldInkCapability.get(chunk);
         RelativeBlockPos relative = RelativeBlockPos.fromAbsolute(pos);
         WorldInk.Entry ink = worldInk.getInk(relative);
 
@@ -105,21 +108,22 @@ public class InkBlockUtils {
             return BlockInkedResult.ALREADY_INKED;
 
         worldInk.setInk(relative, color, inkType);
-        level.getChunkAt(pos).setUnsaved(true);
+        chunk.setUnsaved(true);
 
         if(SplatcraftGameRules.getLocalizedRule(level, pos.above(), SplatcraftGameRules.INK_DESTROYS_FOLIAGE) &&
                 isBlockFoliage(level.getBlockState(pos.above())))
                 level.destroyBlock(pos.above(), true);
 
         if (!level.isClientSide) {
-            SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, color, inkType), level.getChunkAt(pos));
+            SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, color, inkType), chunk);
         }
 
         return sameColor ? BlockInkedResult.ALREADY_INKED : BlockInkedResult.SUCCESS;
     }
 
     public static BlockInkedResult permanentInk(Level level, BlockPos pos) {
-        WorldInk worldInk = WorldInkCapability.get(level, pos);
+        LevelChunk chunk = level.getChunkAt(pos);
+        WorldInk worldInk = WorldInkCapability.get(chunk);
         RelativeBlockPos relative = RelativeBlockPos.fromAbsolute(pos);
 
         if (worldInk.getPermanentInk(relative) != null) {
@@ -133,8 +137,8 @@ public class InkBlockUtils {
 
         if (!level.isClientSide) {
             worldInk.setPermanentInk(relative, ink.color(), ink.type());
-            level.getChunkAt(pos).setUnsaved(true);
-            SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, ink.color(), ink.type()), level.getChunkAt(pos));
+            chunk.setUnsaved(true);
+            SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, ink.color(), ink.type()), chunk);
         }
 
         return BlockInkedResult.SUCCESS;
