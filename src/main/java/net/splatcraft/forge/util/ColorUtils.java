@@ -1,11 +1,9 @@
 package net.splatcraft.forge.util;
 
+import java.util.Random;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
@@ -40,9 +38,6 @@ import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
-
-import java.util.Objects;
-import java.util.Random;
 
 public class ColorUtils
 {
@@ -110,7 +105,7 @@ public class ColorUtils
         Level level = player.level;
         if (!level.isClientSide && updateClient)
         {
-            SplatcraftPacketHandler.sendToAll(new PlayerColorPacket(player, color));
+            SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerColorPacket(player, color), player);
         }
     }
 

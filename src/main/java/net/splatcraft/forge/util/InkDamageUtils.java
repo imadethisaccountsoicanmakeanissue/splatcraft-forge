@@ -1,5 +1,6 @@
 package net.splatcraft.forge.util;
 
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -25,8 +26,6 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class InkDamageUtils {
 
@@ -108,8 +107,9 @@ public class InkDamageUtils {
                 InkOverlayInfo info = InkOverlayCapability.get(target);
 
                 info.setWoolColor(color);
-                if (!level.isClientSide)
-                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
+                if (!level.isClientSide) {
+                    SplatcraftPacketHandler.sendToTrackers(new UpdateInkOverlayPacket(target, info), target);
+                }
             }
         }
 
@@ -127,8 +127,9 @@ public class InkDamageUtils {
                 if (info.getAmount() < target.getMaxHealth() * 1.5)
                     info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
                 info.setColor(color);
-                if (!level.isClientSide)
-                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
+                if (!level.isClientSide) {
+                    SplatcraftPacketHandler.sendToTrackersAndSelf(new UpdateInkOverlayPacket(target, info), target);
+                }
 
             }
         }

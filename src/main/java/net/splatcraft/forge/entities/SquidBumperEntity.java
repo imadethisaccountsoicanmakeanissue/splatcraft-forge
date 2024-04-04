@@ -1,5 +1,6 @@
 package net.splatcraft.forge.entities;
 
+import java.util.Collections;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -11,7 +12,12 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -36,8 +42,6 @@ import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
-
-import java.util.Collections;
 
 public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     public static final float maxInkHealth = 20.0F;
@@ -94,9 +98,8 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
 
         BlockPos pos = getBlockPosBelowThatAffectsMyMovement();
 
-        if (level.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell.get() && level.getBlockEntity(pos) instanceof InkColorTileEntity)
+        if (level.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell.get() && level.getBlockEntity(pos) instanceof InkColorTileEntity te)
         {
-            InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(pos);
             if (te.getColor() != getColor())
                 setColor(te.getColor());
         }
@@ -319,8 +322,8 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
                     d1 = d1 * d3;
                     d0 = d0 * 0.05000000074505806D;
                     d1 = d1 * 0.05000000074505806D;
-                    d0 = d0 * (double) (1.0F /*- this.pushthrough*/); //TODO what's pushthrough????
-                    d1 = d1 * (double) (1.0F /*- this.pushthrough*/);
+                    d0 = d0 /*- this.pushthrough*/; //TODO what's pushthrough????
+                    d1 = d1 /*- this.pushthrough*/;
                     d0 *= 3;
                     d1 *= 3;
 
@@ -459,7 +462,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
                 else info.setAmount(0);
 
                 info.setColor(color);
-                SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(this, info));
+                SplatcraftPacketHandler.sendToTrackers(new UpdateInkOverlayPacket(this, info), this);
             }
     }
 
