@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
@@ -142,6 +143,24 @@ public class InkBlockUtils {
         }
 
         return BlockInkedResult.SUCCESS;
+    }
+
+    public static void forEachInkedBlockInBounds(Level level, AABB bounds, InkedBlockConsumer action)
+    {
+        final AABB expandedBounds = bounds.expandTowards(1,1,1);
+        for(BlockPos.MutableBlockPos chunkPos = new BlockPos.MutableBlockPos(bounds.minX, bounds.minY, bounds.minZ);
+            chunkPos.getX() <= bounds.maxX && chunkPos.getY() <= bounds.maxY && chunkPos.getZ() <= bounds.maxZ; chunkPos.move(16, 16, 16))
+        {
+            LevelChunk chunk = level.getChunkAt(chunkPos);
+            WorldInkCapability.get(chunk).getInkInChunk().entrySet()
+                    .stream().filter(entry -> expandedBounds.contains(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ()))
+                    .forEach(entry -> action.accept(entry.getKey().toAbsolute(chunk.getPos()), entry.getValue()));
+        }
+    }
+
+    public interface InkedBlockConsumer
+    {
+        void accept(BlockPos pos, WorldInk.Entry ink);
     }
 
     public static boolean isBlockFoliage(BlockState state)

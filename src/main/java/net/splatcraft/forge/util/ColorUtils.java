@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -199,6 +200,22 @@ public class ColorUtils
                 ? SplatcraftInkColors.colorLockA.getColor()
                 : SplatcraftInkColors.colorLockB.getColor()
                 : -1;
+    }
+
+    public static void forEachColoredBlockInBounds(Level level, AABB bounds, ColoredBlockConsumer action)
+    {
+        final AABB expandedBounds = bounds.expandTowards(1,1,1);
+        for(BlockPos.MutableBlockPos chunkPos = new BlockPos.MutableBlockPos(bounds.minX, bounds.minY, bounds.minZ);
+            chunkPos.getX() <= bounds.maxX && chunkPos.getY() <= bounds.maxY && chunkPos.getZ() <= bounds.maxZ; chunkPos.move(16, 16, 16))
+        {
+            level.getChunkAt(chunkPos).getBlockEntities().entrySet().stream().filter(entry -> entry.getValue().getBlockState().getBlock() instanceof IColoredBlock && expandedBounds.contains(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ()))
+                    .forEach(entry -> action.accept(entry.getKey(), (IColoredBlock) entry.getValue().getBlockState().getBlock(), entry.getValue()));
+        }
+    }
+
+    public interface ColoredBlockConsumer
+    {
+        void accept(BlockPos pos, IColoredBlock coloredBlock, BlockEntity blockEntity);
     }
 
     public static MutableComponent getColorName(int color)
