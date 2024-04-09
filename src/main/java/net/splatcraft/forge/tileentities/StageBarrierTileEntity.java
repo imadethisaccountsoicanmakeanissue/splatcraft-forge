@@ -64,16 +64,18 @@ public class StageBarrierTileEntity extends BlockEntity
             boolean canRender = true;
             Player player = ClientUtils.getClientPlayer();
             int renderDistance = SplatcraftConfig.Client.barrierRenderDistance.get();
+            boolean withinRenderDistance = player.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) <= renderDistance*renderDistance;
 
-            if(player.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) > renderDistance*renderDistance)
+            if(!withinRenderDistance)
                 canRender = false;
             else if (SplatcraftConfig.Client.holdBarrierToRender.get())
             {
                 canRender = player.getMainHandItem().is(SplatcraftTags.Items.REVEALS_BARRIERS) ||
                         player.getMainHandItem().is(SplatcraftTags.Items.REVEALS_BARRIERS);
             }
+
             if (canRender)
-                resetActiveTime();
+                increaseActiveTime();
         }
 
     }
@@ -86,6 +88,11 @@ public class StageBarrierTileEntity extends BlockEntity
     protected void resetActiveTime()
     {
         activeTime = maxActiveTime;
+    }
+
+    protected void increaseActiveTime()
+    {
+        activeTime = Math.min(maxActiveTime, activeTime+4);
     }
 
     @Override
