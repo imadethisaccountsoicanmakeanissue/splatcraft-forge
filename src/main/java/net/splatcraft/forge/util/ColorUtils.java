@@ -230,18 +230,13 @@ public class ColorUtils
         }
 
         String fallbackUnloc;
-        String fallbackName;
+        MutableComponent fallbackName;
 
-        try
+        fallbackUnloc = "ink_color." + String.format("%06X", color).toLowerCase();
+        fallbackName = new TranslatableComponent(fallbackUnloc);
+        if (!fallbackUnloc.equals(fallbackName.getString()))
         {
-            fallbackUnloc = "ink_color." + String.format("%06X", color).toLowerCase();
-            fallbackName = new TranslatableComponent(fallbackUnloc).getString();
-            if (!fallbackName.equals(fallbackName))
-            {
-                return new TextComponent(fallbackUnloc);
-            }
-        } catch (NoClassDefFoundError ignored)
-        {
+            return fallbackName;
         }
 
 
@@ -251,19 +246,13 @@ public class ColorUtils
             return new TranslatableComponent("ink_color.invert", colorObj.getLocalizedName());
         }
 
-        try
-        {
-            fallbackUnloc = "ink_color." + String.format("%06X", 0xFFFFFF - color).toLowerCase();
-            fallbackName = new TranslatableComponent(fallbackUnloc).getString();
+        fallbackUnloc = "ink_color." + String.format("%06X", 0xFFFFFF - color).toLowerCase();
+        fallbackName = new TranslatableComponent(fallbackUnloc);
 
-            if (!fallbackName.equals(fallbackUnloc))
-            {
-                return new TranslatableComponent("ink_color.invert", fallbackName);
-            }
-        } catch (NoClassDefFoundError ignored)
+        if (!fallbackName.getString().equals(fallbackUnloc))
         {
+            return new TranslatableComponent("ink_color.invert", fallbackName);
         }
-
 
         return new TextComponent("#" + String.format("%06X", color).toUpperCase());
 
