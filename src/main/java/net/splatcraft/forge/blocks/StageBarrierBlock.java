@@ -61,7 +61,7 @@ public class StageBarrierBlock extends Block implements EntityBlock
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter levelIn, BlockPos pos, CollisionContext context)
     {
-        if (Minecraft.getInstance().player.isCreative() || !(levelIn.getBlockEntity(pos) instanceof StageBarrierTileEntity))
+        if ((Minecraft.getInstance().player != null && Minecraft.getInstance().player.isCreative()) || !(levelIn.getBlockEntity(pos) instanceof StageBarrierTileEntity))
         {
             return Shapes.block();
         }
