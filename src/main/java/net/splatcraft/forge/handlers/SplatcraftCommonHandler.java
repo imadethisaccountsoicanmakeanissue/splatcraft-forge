@@ -10,6 +10,7 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -40,6 +41,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.client.layer.PlayerInkColoredSkinLayer;
@@ -102,10 +104,12 @@ public class SplatcraftCommonHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onPlayerClone(final PlayerEvent.Clone event) {
-        if (!event.isWasDeath()) {
-            return;
-        }
+    public static void onPlayerClone(final PlayerEvent.Clone event)
+    {
+        //disabling this means the event will be unnecessarily fired when switching dims, but forge is dumb, and now we need to for exiting the end >:(
+//        if (!event.isWasDeath()) {
+//            return;
+//        }
 
         Player player = event.getPlayer();
         event.getOriginal().reviveCaps(); // Mod devs should not have to do this
