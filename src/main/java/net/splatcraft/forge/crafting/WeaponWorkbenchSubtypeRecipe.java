@@ -80,7 +80,7 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
         Component displayComponent;
 
         if(GsonHelper.isStringValue(json, "name"))
-            displayComponent = new TranslatableComponent(GsonHelper.getAsString(json, "name"));
+            displayComponent = Component.translatable(GsonHelper.getAsString(json, "name"));
         else displayComponent = json.has("name") ? Component.Serializer.fromJson(json.getAsJsonObject("name")) : new TextComponent("null");
 
         ResourceLocation advancement = json.has("advancement") && !GsonHelper.getAsString(json, "advancement").isEmpty()

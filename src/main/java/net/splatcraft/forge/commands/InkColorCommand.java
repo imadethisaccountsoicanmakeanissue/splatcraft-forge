@@ -37,7 +37,7 @@ public class InkColorCommand
     {
         ColorUtils.setPlayerColor(source.getPlayerOrException(), color);
 
-        source.sendSuccess(new TranslatableComponent("commands.inkcolor.success.single", source.getPlayerOrException().getDisplayName(), getColorName(color))/*ColorUtils.getFormatedColorName(color, false)*/, true);
+        source.sendSuccess(Component.translatable("commands.inkcolor.success.single", source.getPlayerOrException().getDisplayName(), getColorName(color))/*ColorUtils.getFormatedColorName(color, false)*/, true);
 
         return 1;
     }
@@ -54,10 +54,10 @@ public class InkColorCommand
 
         if (targets.size() == 1)
         {
-            source.sendSuccess(new TranslatableComponent("commands.inkcolor.success.single", targets.iterator().next().getDisplayName(), getColorName(color)), true);
+            source.sendSuccess(Component.translatable("commands.inkcolor.success.single", targets.iterator().next().getDisplayName(), getColorName(color)), true);
         } else
         {
-            source.sendSuccess(new TranslatableComponent("commands.inkcolor.success.multiple", targets.size(), getColorName(color)), true);
+            source.sendSuccess(Component.translatable("commands.inkcolor.success.multiple", targets.size(), getColorName(color)), true);
         }
 
         return targets.size();

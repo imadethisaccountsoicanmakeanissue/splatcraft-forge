@@ -59,16 +59,16 @@ public class JumpLureItem extends Item implements IColoredItem
 		super.appendHoverText(stack, level, tooltip, flags);
 
 		if (I18n.exists(getDescriptionId() + ".tooltip"))
-			tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 
 		boolean inverted = ColorUtils.isInverted(stack);
 		if (ColorUtils.isColorLocked(stack))
 		{
 			tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
 			if(inverted)
-				tooltip.add(new TranslatableComponent("item.splatcraft.tooltip.inverted").withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.DARK_PURPLE)));
+				tooltip.add(Component.translatable("item.splatcraft.tooltip.inverted").withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.DARK_PURPLE)));
 		}
-		else tooltip.add(new TranslatableComponent( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
+		else tooltip.add(Component.translatable( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
@@ -205,15 +205,15 @@ public class JumpLureItem extends Item implements IColoredItem
 	{
 		BlockPos pos = entity.blockPosition().below();
 
-		if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock) {
-			InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
+		if (entity.level().getBlockState(pos).getBlock() instanceof InkwellBlock) {
+			InkColorTileEntity te = (InkColorTileEntity) entity.level().getBlockEntity(pos);
 
-			if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos)) {
-				ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos));
+			if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level(), pos)) {
+				ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level(), pos));
 				ColorUtils.setColorLocked(entity.getItem(), true);
 			}
 		} else if ((stack.getItem() instanceof SubWeaponItem && !SubWeaponItem.singleUse(stack) || !(stack.getItem() instanceof SubWeaponItem))
-				&& InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
+				&& InkedBlock.causesClear(entity.level(), pos, entity.level().getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
 			ColorUtils.setInkColor(stack, 0xFFFFFF);
 			ColorUtils.setColorLocked(stack, false);
 		}

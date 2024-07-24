@@ -125,7 +125,7 @@ public class SplatcraftKeyHandler {
 
             if (sub.isEmpty() || (info.isSquid() && player.level.getBlockCollisions(player,
                     new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext())) {
-                player.displayClientMessage(new TranslatableComponent("status.cant_use"), true);
+                player.displayClientMessage(Component.translatable("status.cant_use"), true);
             } else {
                 ClientUtils.setSquid(info, false);
 

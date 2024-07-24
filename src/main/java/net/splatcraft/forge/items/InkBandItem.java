@@ -23,6 +23,6 @@ public class InkBandItem extends Item
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flags)
 	{
 		super.appendHoverText(stack, level, tooltip, flags);
-		tooltip.add(new TranslatableComponent(stack.getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(stack.getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 	}
 }

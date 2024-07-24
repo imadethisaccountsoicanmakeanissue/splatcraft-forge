@@ -233,7 +233,7 @@ public class ColorUtils
         MutableComponent fallbackName;
 
         fallbackUnloc = "ink_color." + String.format("%06X", color).toLowerCase();
-        fallbackName = new TranslatableComponent(fallbackUnloc);
+        fallbackName = Component.translatable(fallbackUnloc);
         if (!fallbackUnloc.equals(fallbackName.getString()))
         {
             return fallbackName;
@@ -243,15 +243,15 @@ public class ColorUtils
         colorObj = InkColor.getByHex(0xFFFFFF - color);
         if (colorObj != null)
         {
-            return new TranslatableComponent("ink_color.invert", colorObj.getLocalizedName());
+            return Component.translatable("ink_color.invert", colorObj.getLocalizedName());
         }
 
         fallbackUnloc = "ink_color." + String.format("%06X", 0xFFFFFF - color).toLowerCase();
-        fallbackName = new TranslatableComponent(fallbackUnloc);
+        fallbackName = Component.translatable(fallbackUnloc);
 
         if (!fallbackName.getString().equals(fallbackUnloc))
         {
-            return new TranslatableComponent("ink_color.invert", fallbackName);
+            return Component.translatable("ink_color.invert", fallbackName);
         }
 
         return new TextComponent("#" + String.format("%06X", color).toUpperCase());
@@ -288,7 +288,7 @@ public class ColorUtils
 
         if (entityColor == -1 || inkColor == -1)
             return false;
-        return colorEquals(entity.level, te.getBlockPos(), entityColor, inkColor);
+        return colorEquals(entity.level(), te.getBlockPos(), entityColor, inkColor);
     }
 
     public static boolean colorEquals(LivingEntity entity, ItemStack stack)
@@ -298,7 +298,7 @@ public class ColorUtils
 
         if (entityColor == -1 || inkColor == -1)
             return false;
-        return colorEquals(entity.level, entity.blockPosition(), entityColor, inkColor);
+        return colorEquals(entity.level(), entity.blockPosition(), entityColor, inkColor);
     }
 
     public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)
@@ -362,8 +362,8 @@ public class ColorUtils
         BlockPos pos = InkBlockUtils.getBlockStandingOnPos(entity);
         if(InkBlockUtils.isInked(level, pos))
             color = InkBlockUtils.getInk(level, pos).color();
-        else if (entity.level.getBlockState(pos).getBlock() instanceof IColoredBlock)
-            color = ((IColoredBlock) entity.level.getBlockState(pos).getBlock()).getColor(level, pos);
+        else if (entity.level().getBlockState(pos).getBlock() instanceof IColoredBlock)
+            color = ((IColoredBlock) entity.level().getBlockState(pos).getBlock()).getColor(level, pos);
         addInkSplashParticle(level, color, entity.getX() + (level.getRandom().nextFloat() * 0.8 - 0.4), entity.getY(level.getRandom().nextFloat() * 0.3f), entity.getZ() + (level.getRandom().nextFloat() * 0.8 - 0.4), size + (level.getRandom().nextFloat() * 0.2f - 0.1f));
     }
 

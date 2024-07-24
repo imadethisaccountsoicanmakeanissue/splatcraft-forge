@@ -190,7 +190,7 @@ public class InkVatTileEntity extends BaseContainerBlockEntity implements Worldl
     @Override
     protected Component getDefaultName()
     {
-        return new TranslatableComponent("container.ink_vat");
+        return Component.translatable("container.ink_vat");
     }
 
     @Override

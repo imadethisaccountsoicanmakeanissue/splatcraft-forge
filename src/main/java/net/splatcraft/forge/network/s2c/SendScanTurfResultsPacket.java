@@ -54,7 +54,7 @@ public class SendScanTurfResultsPacket extends PlayS2CPacket
 
         for (int i = 0; i < colors.length; i++)
         {
-            player.displayClientMessage(new TranslatableComponent("status.scan_turf.score", ColorUtils.getFormatedColorName(colors[i], false), String.format("%.1f", scores[i])), false);
+            player.displayClientMessage(Component.translatable("status.scan_turf.score", ColorUtils.getFormatedColorName(colors[i], false), String.format("%.1f", scores[i])), false);
             if (winnerScore < scores[i])
             {
                 winnerScore = scores[i];
@@ -64,7 +64,7 @@ public class SendScanTurfResultsPacket extends PlayS2CPacket
 
         if (winner != -1)
         {
-            player.displayClientMessage(new TranslatableComponent("status.scan_turf.winner", ColorUtils.getFormatedColorName(winner, false)), false);
+            player.displayClientMessage(Component.translatable("status.scan_turf.winner", ColorUtils.getFormatedColorName(winner, false)), false);
         }
 
     }

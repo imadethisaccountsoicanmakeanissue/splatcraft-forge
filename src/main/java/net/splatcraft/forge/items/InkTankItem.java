@@ -130,11 +130,11 @@ public class InkTankItem extends ColoredArmorItem {
         if(!stack.getOrCreateTag().getBoolean("HideTooltip"))
         {
             if (!canRecharge(stack, false)) {
-                tooltip.add(new TranslatableComponent("item.splatcraft.ink_tank.cant_recharge"));
+                tooltip.add(Component.translatable("item.splatcraft.ink_tank.cant_recharge"));
             }
 
             if (flag.isAdvanced()) {
-                tooltip.add(new TranslatableComponent("item.splatcraft.ink_tank.ink", String.format("%.1f", getInkAmount(stack)), capacity));
+                tooltip.add(Component.translatable("item.splatcraft.ink_tank.ink", String.format("%.1f", getInkAmount(stack)), capacity));
             }
         }
 

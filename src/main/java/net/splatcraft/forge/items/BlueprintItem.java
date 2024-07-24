@@ -75,22 +75,22 @@ public class BlueprintItem extends Item
 
 			if(nbt.contains("Advancements"))
 			{
-				components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip"));
+				components.add(Component.translatable("item.splatcraft.blueprint.tooltip"));
 				return;
 			}
 
 			if(nbt.contains("Pools"))
 			{
-				components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip"));
+				components.add(Component.translatable("item.splatcraft.blueprint.tooltip"));
 				nbt.getList("Pools", Tag.TAG_STRING).forEach((weaponType) ->
-						components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip." + weaponType.getAsString())
+						components.add(Component.translatable("item.splatcraft.blueprint.tooltip." + weaponType.getAsString())
 								.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(false)))
 				);
 				return;
 			}
 		}
 
-		components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip.empty"));
+		components.add(Component.translatable("item.splatcraft.blueprint.tooltip.empty"));
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class BlueprintItem extends Item
 		Predicate<Item> predicate = weaponPools.get(weaponType);
 
 		ListTag lore = new ListTag();
-		lore.add(StringTag.valueOf(Component.Serializer.toJson(new TranslatableComponent("item.splatcraft.blueprint.tooltip." + weaponType)
+		lore.add(StringTag.valueOf(Component.Serializer.toJson(Component.translatable("item.splatcraft.blueprint.tooltip." + weaponType)
 				.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(false)))));
 
 		blueprint.getOrCreateTagElement("display").put("Lore",lore);
@@ -200,19 +200,19 @@ public class BlueprintItem extends Item
 						serverPlayer.getAdvancements().award(advancement, key);
 
 					if (advancement.getDisplay() != null && !advancement.getDisplay().shouldShowToast())
-						player.displayClientMessage(new TranslatableComponent("status.blueprint.unlock", advancement.getDisplay().getTitle()), true);
+						player.displayClientMessage(Component.translatable("status.blueprint.unlock", advancement.getDisplay().getTitle()), true);
 
 					stack.shrink(1);
 					return InteractionResultHolder.consume(stack);
 				}
 
-				player.displayClientMessage(new TranslatableComponent("status.blueprint.already_unlocked" + (count > 1 ? "" : ".single")), true);
+				player.displayClientMessage(Component.translatable("status.blueprint.already_unlocked" + (count > 1 ? "" : ".single")), true);
 				return super.use(level, player, hand);
 			}
 		}
 
 
-		player.displayClientMessage(new TranslatableComponent("status.blueprint.invalid"), true);
+		player.displayClientMessage(Component.translatable("status.blueprint.invalid"), true);
 		return super.use(level, player, hand);
 	}
 }

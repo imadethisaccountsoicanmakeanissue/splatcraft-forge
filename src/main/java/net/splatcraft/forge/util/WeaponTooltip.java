@@ -55,8 +55,8 @@ public class WeaponTooltip<S extends AbstractWeaponSettings<S, ?>>
     {
 
         if(advanced)
-            return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name),
-                    new TranslatableComponent("weaponStat.metric." + metric.localizedName, new DecimalFormat("0.#").format(getStatValue(settings))))
+            return Component.translatable("weaponStat.format", Component.translatable("weaponStat." + name),
+                    Component.translatable("weaponStat.metric." + metric.localizedName, new DecimalFormat("0.#").format(getStatValue(settings))))
                     .withStyle(ChatFormatting.DARK_GREEN);
         else
         {
@@ -64,9 +64,9 @@ public class WeaponTooltip<S extends AbstractWeaponSettings<S, ?>>
 
             Object[] args = new Object[5];
             for(int i = 1; i <= 5; i++)
-                args[i-1] = new TranslatableComponent("weaponStat.gauge." + (ranking >= i ? "full" : "empty"));
+                args[i-1] = Component.translatable("weaponStat.gauge." + (ranking >= i ? "full" : "empty"));
 
-            return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name), new TranslatableComponent("weaponStat.metric.gauge", args)).withStyle(ranking > 5 ? ChatFormatting.GOLD : ChatFormatting.DARK_GREEN);
+            return Component.translatable("weaponStat.format", Component.translatable("weaponStat." + name), Component.translatable("weaponStat.metric.gauge", args)).withStyle(ranking > 5 ? ChatFormatting.GOLD : ChatFormatting.DARK_GREEN);
         }
     }
     @Override

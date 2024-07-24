@@ -230,7 +230,7 @@ public abstract class AbstractStagePadScreen extends Screen
 		return (button, poseStack, x, y) ->
 		{
 			if(pos.get() != null)
-				renderTooltip(poseStack, Arrays.asList(new TranslatableComponent("gui.stage_pad.button.position", pos.get().getX(), pos.get().getY(), pos.get().getZ()), new TranslatableComponent("gui.stage_pad.button.copy_position").withStyle(ChatFormatting.YELLOW)),
+				renderTooltip(poseStack, Arrays.asList(Component.translatable("gui.stage_pad.button.position", pos.get().getX(), pos.get().getY(), pos.get().getZ()), Component.translatable("gui.stage_pad.button.copy_position").withStyle(ChatFormatting.YELLOW)),
 						Optional.empty(), x, y);
 		};
 	}
@@ -313,9 +313,9 @@ public abstract class AbstractStagePadScreen extends Screen
 	protected void addOptionsTabs(Component label, String stageId, Screen mainMenu)
 	{
 		addButton(new MenuButton(10, 12, 14, 12, goToScreen(() -> mainMenu), Button.NO_TOOLTIP, drawIcon(WIDGETS, 1, 0, 244, 24, 12, 12), MenuButton.ButtonColor.GREEN));
-		addButton(new MenuButton(24, 12, 44, 12, goToScreen(() -> new StageSettingsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.settings"), true), MenuButton.ButtonColor.PURPLE));
-		addButton(new MenuButton(68, 12, 44, 12, goToScreen(() -> new StageRulesScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.rules"), true), MenuButton.ButtonColor.PURPLE));
-		addButton(new MenuButton(112, 12, 44, 12, goToScreen(() -> new StageTeamsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.teams"), true), MenuButton.ButtonColor.PURPLE));
-		addButton(new MenuButton(156, 12, 44, 12, goToScreen(() -> new StageActionsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.actions"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(24, 12, 44, 12, goToScreen(() -> new StageSettingsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.tab.settings"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(68, 12, 44, 12, goToScreen(() -> new StageRulesScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.tab.rules"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(112, 12, 44, 12, goToScreen(() -> new StageTeamsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.tab.teams"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(156, 12, 44, 12, goToScreen(() -> new StageActionsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.tab.actions"), true), MenuButton.ButtonColor.PURPLE));
 	}
 }

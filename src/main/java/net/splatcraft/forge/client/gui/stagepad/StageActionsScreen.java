@@ -31,19 +31,19 @@ public class StageActionsScreen extends AbstractStagePadScreen
 
 		scanMode = addButton(new StageSelectionScreen.ToggleMenuButton(136, 50, 24, 12, (b) -> {}, (b, ps, mx, my) ->
 		{
-			showText(new TranslatableComponent("gui.stage_pad.button.scan_mode", new TranslatableComponent("item.splatcraft.turf_scanner.mode." + (((StageSelectionScreen.ToggleMenuButton)b).toggle ? "1" : "0")))).onTooltip(b, ps, mx, my);
+			showText(Component.translatable("gui.stage_pad.button.scan_mode", Component.translatable("item.splatcraft.turf_scanner.mode." + (((StageSelectionScreen.ToggleMenuButton)b).toggle ? "1" : "0")))).onTooltip(b, ps, mx, my);
 		}, drawToggleIcon(WIDGETS, 0, 0, 232, 48, 12, 12, true), MenuButton.ButtonColor.GREEN, false).setRenderBackground(false));
 		addButton(new MenuButton(50, 50, 86, 12, (b) ->
 		{
 			SplatcraftPacketHandler.sendToServer(new RequestTurfScanPacket(stageId, !scanMode.toggle));
 			getMinecraft().setScreen(null);
-		}, Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.scan_turf"), true), MenuButton.ButtonColor.GREEN));
+		}, Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.button.scan_turf"), true), MenuButton.ButtonColor.GREEN));
 		addButton(new MenuButton(50, 64, 110, 12, (b) ->
 		{
 			SplatcraftPacketHandler.sendToServer(new RequestClearInkPacket(stageId));
 			getMinecraft().setScreen(null);
-		}, Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.clear_ink"), true), MenuButton.ButtonColor.GREEN));
-		addButton(new MenuButton(50, 78, 110, 12, goToScreen(() -> mainMenu), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.pair_remote"), true), MenuButton.ButtonColor.GREEN));
+		}, Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.button.clear_ink"), true), MenuButton.ButtonColor.GREEN));
+		addButton(new MenuButton(50, 78, 110, 12, goToScreen(() -> mainMenu), Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.button.pair_remote"), true), MenuButton.ButtonColor.GREEN));
 	}
 
 	@Override

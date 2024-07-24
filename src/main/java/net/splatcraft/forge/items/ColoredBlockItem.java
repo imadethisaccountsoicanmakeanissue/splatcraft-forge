@@ -4,11 +4,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -17,11 +15,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -73,10 +69,8 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
                 } else if (!player.getInventory().add(itemstack1))
                 {
                     player.drop(itemstack1, false);
-                } else if (player instanceof ServerPlayer)
-                {
-                    //((ServerPlayer) player).refreshContainer(player.containerMenu);
                 }
+
 
                 return InteractionResult.SUCCESS;
             }));
@@ -112,17 +106,17 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         super.appendHoverText(stack, level, tooltip, flag);
 
         if (I18n.exists(getDescriptionId() + ".tooltip"))
-            tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 
         boolean inverted = ColorUtils.isInverted(stack);
         if (ColorUtils.isColorLocked(stack))
         {
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
             if(inverted)
-                tooltip.add(new TranslatableComponent("item.splatcraft.tooltip.inverted").withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.DARK_PURPLE)));
+                tooltip.add(Component.translatable("item.splatcraft.tooltip.inverted").withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.DARK_PURPLE)));
         }
         else if(matchColor)
-            tooltip.add(new TranslatableComponent( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
     }
 
     public ColoredBlockItem addStarterColors()
@@ -153,6 +147,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         return super.updateCustomBlockEntityTag(pos, levelIn, player, stack, state);
     }
 
+    /*
     @Override
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items)
     {
@@ -168,6 +163,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
             }
         }
     }
+    */
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level levelIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected)
@@ -187,16 +183,16 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     {
         BlockPos pos = entity.blockPosition();
 
-        if (entity.level.getBlockState(pos.below()).getBlock() instanceof InkwellBlock)
+        if (entity.level().getBlockState(pos.below()).getBlock() instanceof InkwellBlock)
         {
-            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos.below()))
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level(), pos.below()))
             {
-                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos.below()));
+                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level(), pos.below()));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }
         else if (!(equals(clearItem) && ColorUtils.getInkColor(stack) < 0) &&
-                clearItem != null && InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos), Direction.UP))
+                clearItem != null && InkedBlock.causesClear(entity.level(), pos, entity.level().getBlockState(pos), Direction.UP))
         {
             entity.setItem(new ItemStack(clearItem, stack.getCount()));
         }

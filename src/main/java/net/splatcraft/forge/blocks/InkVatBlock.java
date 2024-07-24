@@ -21,14 +21,16 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
 {
 
@@ -37,7 +39,7 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public InkVatBlock() {
-        super(Properties.of(Material.METAL).strength(2.0f).requiresCorrectToolForDrops());
+        super(Properties.of().mapColor(MapColor.METAL).strength(2.0f).requiresCorrectToolForDrops());
         SplatcraftBlocks.inkColoredBlocks.add(this);
 
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false).setValue(POWERED, false));
@@ -57,7 +59,7 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level levelIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit)
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level levelIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit)
     {
         if (levelIn.isClientSide)
         {
@@ -66,7 +68,7 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
 
         if (levelIn.getBlockEntity(pos) instanceof InkVatTileEntity)
         {
-            NetworkHooks.openGui((ServerPlayer) player, (InkVatTileEntity) levelIn.getBlockEntity(pos), pos);
+            NetworkHooks.openScreen((ServerPlayer) player, (InkVatTileEntity) levelIn.getBlockEntity(pos), pos);
             return InteractionResult.SUCCESS;
         }
 
@@ -123,25 +125,25 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state)
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state)
     {
         return RenderShape.MODEL;
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot)
+    public @NotNull BlockState rotate(BlockState state, Rotation rot)
     {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn)
+    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn)
     {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(@NotNull Level levelIn, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity placer, ItemStack stack)
     {
         if (stack.hasCustomHoverName())
         {
@@ -156,7 +158,7 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
 
 
     @Override
-    public void onRemove(BlockState state, Level levelIn, BlockPos pos, BlockState newState, boolean isMoving)
+    public void onRemove(BlockState state, @NotNull Level levelIn, @NotNull BlockPos pos, BlockState newState, boolean isMoving)
     {
         if (!state.is(newState.getBlock()))
         {
@@ -172,19 +174,19 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     }
 
     @Override
-    public boolean hasAnalogOutputSignal(BlockState state)
+    public boolean hasAnalogOutputSignal(@NotNull BlockState state)
     {
         return true;
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level levelIn, BlockPos pos)
+    public int getAnalogOutputSignal(@NotNull BlockState blockState, Level levelIn, @NotNull BlockPos pos)
     {
         return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(levelIn.getBlockEntity(pos));
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
+    public void neighborChanged(BlockState state, Level levelIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving)
     {
         boolean isPowered = levelIn.hasNeighborSignal(pos);
         if (isPowered != state.getValue(POWERED)) {
@@ -199,13 +201,13 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return SplatcraftTileEntities.inkVatTileEntity.get().create(pos, state);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         return createTickerHelper(type, SplatcraftTileEntities.inkVatTileEntity.get(), InkVatTileEntity::tick);
     }
 }

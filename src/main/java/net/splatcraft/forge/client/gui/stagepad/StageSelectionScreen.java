@@ -43,7 +43,7 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 
 		createStageButton = addButton(new MenuButton(10, 0, 178, 12,
 				goToScreen(() -> new StageCreationScreen(title, this, "", null, null)), Button.NO_TOOLTIP,
-				drawText(new TranslatableComponent("gui.stage_pad.button.create_stage"), false), MenuButton.ButtonColor.LIME));
+				drawText(Component.translatable("gui.stage_pad.button.create_stage"), false), MenuButton.ButtonColor.LIME));
 		stages.clear();
 
 		toggleSearchBarButton = addButton(new ToggleMenuButton(176, 12, 24, 12, (b) ->
@@ -52,11 +52,11 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 			searchBar.setFocus(searchBar.visible);
 			if(!searchBar.visible)
 				searchBar.setValue("");
-		}, showText(new TranslatableComponent("gui.stage_pad.button.search_stage")), drawToggleIcon(WIDGETS, 0, 0, 232, 12, 12, 12, false), MenuButton.ButtonColor.PURPLE, false));
+		}, showText(Component.translatable("gui.stage_pad.button.search_stage")), drawToggleIcon(WIDGETS, 0, 0, 232, 12, 12, 12, false), MenuButton.ButtonColor.PURPLE, false));
 
 		addTextBox(font ->
 		{
-			searchBar = new MenuTextBox(font, 11, 13, 175, 10, new TranslatableComponent("gui.stage_pad.textbox.search_stage"), false);
+			searchBar = new MenuTextBox(font, 11, 13, 175, 10, Component.translatable("gui.stage_pad.textbox.search_stage"), false);
 			searchBar.setFocus(true);
 			searchBar.visible = false;
 			return searchBar;
@@ -239,7 +239,7 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 			blit(poseStack, x + 10, y + 12, 0, 244, 178, 12);
 		else
 		{
-			Component label = new TranslatableComponent("gui.stage_pad.label.stage_select");
+			Component label = Component.translatable("gui.stage_pad.label.stage_select");
 			font.draw(poseStack, label, x + 105 - (float) font.width(label) / 2, y + 14, 0xFFFFFF);
 		}
 
@@ -380,11 +380,11 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 
 		public enum ButtonState
 		{
-			REQUESTING(false, ButtonColor.YELLOW, new TranslatableComponent("gui.stage_pad.button.superjump_to.requesting")),
-			OUT_OF_RANGE(false, ButtonColor.RED, new TranslatableComponent("gui.stage_pad.button.superjump_to.out_of_range").withStyle(ChatFormatting.RED)),
-			NO_SPAWN_PADS(false, ButtonColor.RED,  new TranslatableComponent("gui.stage_pad.button.superjump_to.no_pads_found").withStyle(ChatFormatting.RED)),
-			VALID(true, ButtonColor.CYAN,  new TranslatableComponent("gui.stage_pad.button.superjump_to")),
-			REQUIRES_UPDATE(true, ButtonColor.YELLOW, new TranslatableComponent("gui.stage_pad.button.superjump_to.requires_update").withStyle(ChatFormatting.YELLOW))
+			REQUESTING(false, ButtonColor.YELLOW, Component.translatable("gui.stage_pad.button.superjump_to.requesting")),
+			OUT_OF_RANGE(false, ButtonColor.RED, Component.translatable("gui.stage_pad.button.superjump_to.out_of_range").withStyle(ChatFormatting.RED)),
+			NO_SPAWN_PADS(false, ButtonColor.RED,  Component.translatable("gui.stage_pad.button.superjump_to.no_pads_found").withStyle(ChatFormatting.RED)),
+			VALID(true, ButtonColor.CYAN,  Component.translatable("gui.stage_pad.button.superjump_to")),
+			REQUIRES_UPDATE(true, ButtonColor.YELLOW, Component.translatable("gui.stage_pad.button.superjump_to.requires_update").withStyle(ChatFormatting.YELLOW))
 			;
 
 

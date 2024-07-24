@@ -161,15 +161,15 @@ public abstract class RemoteItem extends Item implements CommandSource
             if (hasCoordSet(stack))
             {
                 Tuple<BlockPos, BlockPos> set = getCoordSet(stack, levelIn);
-                tooltip.add(new TranslatableComponent("item.remote.coords.b", set.getA().getX(), set.getA().getY(), set.getA().getZ(),
+                tooltip.add(Component.translatable("item.remote.coords.b", set.getA().getX(), set.getA().getY(), set.getA().getZ(),
                         set.getB().getX(), set.getB().getY(), set.getB().getZ()));
             } else if (stack.getOrCreateTag().contains("PointA"))
             {
                 BlockPos pos = NbtUtils.readBlockPos(nbt.getCompound("PointA"));
-                tooltip.add(new TranslatableComponent("item.remote.coords.a", pos.getX(), pos.getY(), pos.getZ()));
+                tooltip.add(Component.translatable("item.remote.coords.a", pos.getX(), pos.getY(), pos.getZ()));
             }
         }
-        else tooltip.add(new TranslatableComponent("item.remote.coords.invalid").withStyle(Style.EMPTY.withColor(ChatFormatting.RED).withItalic(true)));
+        else tooltip.add(Component.translatable("item.remote.coords.invalid").withStyle(Style.EMPTY.withColor(ChatFormatting.RED).withItalic(true)));
 
         if(nbt.contains("Targets") && !nbt.getString("Targets").isEmpty())
             tooltip.add(ComponentUtils.mergeStyles(new TextComponent(nbt.getString("Targets")), TARGETS_STYLE));
@@ -190,7 +190,7 @@ public abstract class RemoteItem extends Item implements CommandSource
             String key = context.getItemInHand().getOrCreateTag().contains("PointB") ? "b" : "a";
             BlockPos pos = context.getClickedPos();
 
-            context.getPlayer().displayClientMessage(new TranslatableComponent("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
+            context.getPlayer().displayClientMessage(Component.translatable("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
@@ -209,7 +209,7 @@ public abstract class RemoteItem extends Item implements CommandSource
 
             if (levelIn.isClientSide && I18n.exists(statusMsg))
             {
-                playerIn.displayClientMessage(new TranslatableComponent("status.remote_mode", new TranslatableComponent(statusMsg)), true);
+                playerIn.displayClientMessage(Component.translatable("status.remote_mode", Component.translatable(statusMsg)), true);
             }
         } else if (hasCoordSet(stack) && !levelIn.isClientSide)
         {
@@ -236,7 +236,7 @@ public abstract class RemoteItem extends Item implements CommandSource
         Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack, usedOnWorld);
 
         if (coordSet == null)
-            return new RemoteResult(false, new TranslatableComponent("status.remote.undefined_area"));
+            return new RemoteResult(false, Component.translatable("status.remote.undefined_area"));
 
         Collection<ServerPlayer> targets = ALL_TARGETS;
 

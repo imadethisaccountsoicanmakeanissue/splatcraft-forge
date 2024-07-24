@@ -41,7 +41,7 @@ public abstract class CreativeTabMixin implements AbstractContainerAccessor<Crea
 		{
 			CreativeModeInventoryScreen.ItemPickerMenu menu = this.getMenu();
 
-			String invertedStr = ChatFormatting.stripFormatting(new TranslatableComponent("ink_color.invert", "%s").getString()).toLowerCase(Locale.ROOT);
+			String invertedStr = ChatFormatting.stripFormatting(Component.translatable("ink_color.invert", "%s").getString()).toLowerCase(Locale.ROOT);
 			boolean inverted = false;
 
 			if(!invertedStr.isEmpty())
@@ -112,7 +112,7 @@ public abstract class CreativeTabMixin implements AbstractContainerAccessor<Crea
 	}
 
 	@Unique
-	private static final Component splatcraft$label = new TranslatableComponent("itemGroup.splatcraft_colors.label");
+	private static final Component splatcraft$label = Component.translatable("itemGroup.splatcraft_colors.label");
 	@ModifyArg(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;draw(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/network/chat/Component;FFI)I"), index = 1)
 	private Component injectTabLabel(Component original)
 	{

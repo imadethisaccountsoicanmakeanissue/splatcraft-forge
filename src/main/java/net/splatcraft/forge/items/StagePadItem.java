@@ -90,15 +90,15 @@ public class StagePadItem extends Item implements IColoredItem
 	{
 		BlockPos pos = entity.blockPosition().below();
 
-		if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock) {
-			InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
+		if (entity.level().getBlockState(pos).getBlock() instanceof InkwellBlock) {
+			InkColorTileEntity te = (InkColorTileEntity) entity.level().getBlockEntity(pos);
 
-			if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos)) {
-				ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos));
+			if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level(), pos)) {
+				ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level(), pos));
 				ColorUtils.setColorLocked(entity.getItem(), true);
 			}
 		} else if ((stack.getItem() instanceof SubWeaponItem && !SubWeaponItem.singleUse(stack) || !(stack.getItem() instanceof SubWeaponItem))
-				&& InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
+				&& InkedBlock.causesClear(entity.level(), pos, entity.level().getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
 			ColorUtils.setInkColor(stack, 0xFFFFFF);
 			ColorUtils.setColorLocked(stack, false);
 		}

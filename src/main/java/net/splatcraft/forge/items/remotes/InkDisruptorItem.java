@@ -34,7 +34,7 @@ public class InkDisruptorItem extends RemoteItem
     public static RemoteResult clearInk(Level level, BlockPos from, BlockPos to)
     {
         if (!level.isInWorldBounds(from) || !level.isInWorldBounds(to))
-            return createResult(false, new TranslatableComponent("status.clear_ink.out_of_world"));
+            return createResult(false, Component.translatable("status.clear_ink.out_of_world"));
 
         /*
         for (int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)
@@ -43,7 +43,7 @@ public class InkDisruptorItem extends RemoteItem
             {
                 if (!level.isLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
                 {
-                    return createResult(false, new TranslatableComponent("status.clear_ink.out_of_world"));
+                    return createResult(false, Component.translatable("status.clear_ink.out_of_world"));
                 }
             }
         }
@@ -84,6 +84,6 @@ public class InkDisruptorItem extends RemoteItem
         }
         */
 
-        return createResult(true, new TranslatableComponent("status.clear_ink." + (count.get() > 0 ? "success" : "no_ink"), count)).setIntResults(count.get(),blockTotal == 0 ? 0 : count.get() * 15 / blockTotal);
+        return createResult(true, Component.translatable("status.clear_ink." + (count.get() > 0 ? "success" : "no_ink"), count)).setIntResults(count.get(),blockTotal == 0 ? 0 : count.get() * 15 / blockTotal);
     }
 }

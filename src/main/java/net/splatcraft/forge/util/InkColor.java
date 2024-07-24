@@ -40,7 +40,7 @@ public class InkColor implements Comparable<InkColor>, IForgeRegistryEntry<InkCo
 
     public TranslatableComponent getLocalizedName()
     {
-        return new TranslatableComponent(getUnlocalizedName());
+        return Component.translatable(getUnlocalizedName());
     }
 
     public String getUnlocalizedName()

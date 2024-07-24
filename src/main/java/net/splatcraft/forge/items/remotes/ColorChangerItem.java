@@ -49,7 +49,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     {
 
         if (!level.isInWorldBounds(from) || !level.isInWorldBounds(to))
-            return createResult(false, new TranslatableComponent("status.change_color.out_of_world"));
+            return createResult(false, Component.translatable("status.change_color.out_of_world"));
 
         AABB bounds = new AABB(from, to);
         AtomicInteger count = new AtomicInteger();
@@ -75,7 +75,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                 SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
         }
 
-        return createResult(true, new TranslatableComponent("status.change_color.success", count, level.isClientSide ? ColorUtils.getFormatedColorName(color, false) : InkColorCommand.getColorName(color))).setIntResults(count.get(), blockTotal == 0 ? 0 : count.get() * 15 / blockTotal);
+        return createResult(true, Component.translatable("status.change_color.success", count, level.isClientSide ? ColorUtils.getFormatedColorName(color, false) : InkColorCommand.getColorName(color))).setIntResults(count.get(), blockTotal == 0 ? 0 : count.get() * 15 / blockTotal);
     }
 
     @Override
@@ -116,11 +116,11 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     {
         BlockPos pos = entity.blockPosition().below();
 
-        if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock)
+        if (entity.level().getBlockState(pos).getBlock() instanceof InkwellBlock)
         {
-            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos))
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level(), pos))
             {
-                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos));
+                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level(), pos));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }

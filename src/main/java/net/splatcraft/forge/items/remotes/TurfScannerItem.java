@@ -38,7 +38,7 @@ public class TurfScannerItem extends RemoteItem
 
 
         if (!level.isInWorldBounds(minPos) || !level.isInWorldBounds(maxPos))
-            return new TurfScanResult(false, new TranslatableComponent("status.scan_turf.out_of_world"));
+            return new TurfScanResult(false, Component.translatable("status.scan_turf.out_of_world"));
 
         if (level.isClientSide)
         {
@@ -177,7 +177,7 @@ public class TurfScannerItem extends RemoteItem
 
         if (scores.isEmpty())
         {
-            return new TurfScanResult(false, new TranslatableComponent("status.scan_turf.no_ink"));
+            return new TurfScanResult(false, Component.translatable("status.scan_turf.no_ink"));
         } else
         {
             SendScanTurfResultsPacket packet = new SendScanTurfResultsPacket(colors, colorScores);
@@ -188,7 +188,7 @@ public class TurfScannerItem extends RemoteItem
 
         }
 
-        return (TurfScanResult) new TurfScanResult(true, new TranslatableComponent("commands.scanturf.success", blockTotal), scores, blockTotal).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
+        return (TurfScanResult) new TurfScanResult(true, Component.translatable("commands.scanturf.success", blockTotal), scores, blockTotal).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
     }
 
     private static BlockPos getTopSolidOrLiquidBlock(BlockPos pos, Level level, int min, int max)

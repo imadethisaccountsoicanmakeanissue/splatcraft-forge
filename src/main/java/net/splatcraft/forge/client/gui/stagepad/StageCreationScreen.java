@@ -69,11 +69,11 @@ public class StageCreationScreen extends AbstractStagePadScreen
 		}));
 
 		addButton(new MenuButton(51, 107, 50, 12, goToScreen(() -> parent),
-				Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.cancel"), true), MenuButton.ButtonColor.RED));
+				Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.button.cancel"), true), MenuButton.ButtonColor.RED));
 		addButton(new MenuButton(167, 70, 30, 12, (b) -> clickSetCornerButton(b, true),
-				showText(new TranslatableComponent("gui.stage_pad.button.set_from_world"), new TranslatableComponent("gui.stage_pad.button.set_from_clipboard").withStyle(ChatFormatting.YELLOW)), drawText(new TranslatableComponent("gui.stage_pad.button.set_corner"), true), MenuButton.ButtonColor.GREEN));
+				showText(Component.translatable("gui.stage_pad.button.set_from_world"), Component.translatable("gui.stage_pad.button.set_from_clipboard").withStyle(ChatFormatting.YELLOW)), drawText(Component.translatable("gui.stage_pad.button.set_corner"), true), MenuButton.ButtonColor.GREEN));
 		addButton(new MenuButton(167, 88, 30, 12, (b) -> clickSetCornerButton(b, false),
-				showText(new TranslatableComponent("gui.stage_pad.button.set_from_world"), new TranslatableComponent("gui.stage_pad.button.set_from_clipboard").withStyle(ChatFormatting.YELLOW)), drawText(new TranslatableComponent("gui.stage_pad.button.set_corner"), true), MenuButton.ButtonColor.GREEN));
+				showText(Component.translatable("gui.stage_pad.button.set_from_world"), Component.translatable("gui.stage_pad.button.set_from_clipboard").withStyle(ChatFormatting.YELLOW)), drawText(Component.translatable("gui.stage_pad.button.set_corner"), true), MenuButton.ButtonColor.GREEN));
 		createButton = addButton(new MenuButton(107, 107, 50, 12, (b) ->
 		{
 			if(canCreate())
@@ -84,13 +84,13 @@ public class StageCreationScreen extends AbstractStagePadScreen
 				this.stageName.setFocus(false);
 				pendingCreation = true;
 			}
-		}, Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.create"), true), MenuButton.ButtonColor.LIME));
+		}, Button.NO_TOOLTIP, drawText(Component.translatable("gui.stage_pad.button.create"), true), MenuButton.ButtonColor.LIME));
 
 		addButton(new StageSelectionScreen.HiddenButton(62, 69, 102, 14, copyPos(() -> corner1), showCopyPos(() -> corner1), (ps, b) -> {}));
 		addButton(new StageSelectionScreen.HiddenButton(62, 87, 102, 14, copyPos(() -> corner2), showCopyPos(() -> corner2), (ps, b) -> {}));
 
 		addTextBox(font -> {
-			this.stageName = new MenuTextBox(font, 17, 40, 178, 12, new TranslatableComponent("gui.stage_pad.label.set_stage_name.textbox"), false);
+			this.stageName = new MenuTextBox(font, 17, 40, 178, 12, Component.translatable("gui.stage_pad.label.set_stage_name.textbox"), false);
 			this.stageName.setValue(savedStageName);
 			this.stageName.setFocus(true);
 			return this.stageName;
@@ -124,7 +124,7 @@ public class StageCreationScreen extends AbstractStagePadScreen
 		{
 			setCorner1 = isCorner1;
 			minecraft.setScreen(null);
-			getMinecraft().player.displayClientMessage(new TranslatableComponent("status.stage_pad.set_corner." + (isCorner1 ? 'a' : 'b')), true);
+			getMinecraft().player.displayClientMessage(Component.translatable("status.stage_pad.set_corner." + (isCorner1 ? 'a' : 'b')), true);
 		}
 	}
 
@@ -183,14 +183,14 @@ public class StageCreationScreen extends AbstractStagePadScreen
 
 		blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
 
-		Component label = new TranslatableComponent("gui.stage_pad.label.create_stage");
+		Component label = Component.translatable("gui.stage_pad.label.create_stage");
 		font.draw(poseStack, label, x + 105 - (float) font.width(label) / 2, y + 14, 0xFFFFFF);
-		font.draw(poseStack, new TranslatableComponent("gui.stage_pad.label.set_stage_name"), x + 14, y + 28, 0xFFFFFF);
-		font.draw(poseStack, new TranslatableComponent("gui.stage_pad.label.stage_id", stageId), x + 14, y + 55, 0x808080);
+		font.draw(poseStack, Component.translatable("gui.stage_pad.label.set_stage_name"), x + 14, y + 28, 0xFFFFFF);
+		font.draw(poseStack, Component.translatable("gui.stage_pad.label.stage_id", stageId), x + 14, y + 55, 0x808080);
 
-		label = new TranslatableComponent("gui.stage_pad.label.corner_1");
+		label = Component.translatable("gui.stage_pad.label.corner_1");
 		font.draw(poseStack, label, x + 60 - font.width(label), y + 72, 0xFFFFFF);
-		label = new TranslatableComponent("gui.stage_pad.label.corner_2");
+		label = Component.translatable("gui.stage_pad.label.corner_2");
 		font.draw(poseStack, label, x + 60 - font.width(label), y + 90, 0xFFFFFF);
 
 		if(corner1 != null)

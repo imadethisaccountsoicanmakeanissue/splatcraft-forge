@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public class ColorCriterionArgument extends InkColorArgument
 {
 
-    public static final DynamicCommandExceptionType CRITERION_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslatableComponent("arg.colorCriterion.notFound", p_208663_0_));
+    public static final DynamicCommandExceptionType CRITERION_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> Component.translatable("arg.colorCriterion.notFound", p_208663_0_));
 
     private ColorCriterionArgument()
     {

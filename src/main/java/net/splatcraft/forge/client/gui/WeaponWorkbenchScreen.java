@@ -169,7 +169,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         else
         {
             int boxSize = 106;
-            Component emptyText = new TranslatableComponent("gui.ammo_knights_workbench.empty");
+            Component emptyText = Component.translatable("gui.ammo_knights_workbench.empty");
             List<FormattedCharSequence> split = font.split(emptyText, boxSize);
 
             float yy = 73 - split.size() * 0.5f * font.lineHeight;
@@ -343,7 +343,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         }
 
         blit(matrixStack, 71, 93, 177, ty, 34, 12);
-        String craftStr = new TranslatableComponent("gui.ammo_knights_workbench.craft").getString();
+        String craftStr = Component.translatable("gui.ammo_knights_workbench.craft").getString();
 
         font.draw(matrixStack, craftStr, (float) imageWidth / 2 - (float) font.width(craftStr) / 2, 95, ty == 0 ? 0x999999 : 0xEFEFEF);
         RenderSystem.setShaderTexture(0, TEXTURES);
@@ -386,7 +386,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
             {
 
                 ArrayList<Component> tooltip = new ArrayList<>();
-                TranslatableComponent t = new TranslatableComponent("weaponRecipe." + recipeList.get(i).getId().toString());
+                TranslatableComponent t = Component.translatable("weaponRecipe." + recipeList.get(i).getId().toString());
                 if (t.getString().equals("weaponRecipe." + recipeList.get(i).getId().toString()))
                 {
                     tooltip.add(getDisplayName(displayStack));

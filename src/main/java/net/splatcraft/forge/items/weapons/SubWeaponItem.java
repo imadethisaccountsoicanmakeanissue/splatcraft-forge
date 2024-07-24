@@ -82,7 +82,7 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (SubWeaponItem.singleUse(stack))
-            tooltip.add(new TranslatableComponent("item.splatcraft.tooltip.single_use"));
+            tooltip.add(Component.translatable("item.splatcraft.tooltip.single_use"));
         super.appendHoverText(stack, level, tooltip, flag);
     }
 

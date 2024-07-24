@@ -1,7 +1,7 @@
 package net.splatcraft.forge.registries;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import java.util.ArrayList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -9,55 +9,36 @@ import net.splatcraft.forge.items.ColoredBlockItem;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkColor;
 
-import java.util.ArrayList;
-
-import static net.splatcraft.forge.registries.SplatcraftItems.*;
+import static net.splatcraft.forge.registries.SplatcraftItems.inkwell;
+import static net.splatcraft.forge.registries.SplatcraftItems.sardiniumBlock;
+import static net.splatcraft.forge.registries.SplatcraftItems.splattershot;
 
 public class SplatcraftItemGroups
 {
-    public static final CreativeModeTab GROUP_GENERAL = new CreativeModeTab("splatcraft_general")
-    {
-        @Override
-        public ItemStack makeIcon()
-        {
-            return new ItemStack(sardiniumBlock.get());
-        }
-    };
+    public static final CreativeModeTab GROUP_GENERAL = CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.splatcraft_general"))
+            .icon(() -> new ItemStack(sardiniumBlock.get()))
+            .build();
 
-    public static final CreativeModeTab GROUP_WEAPONS = new CreativeModeTab("splatcraft_weapons")
-    {
-        @Override
-        public ItemStack makeIcon()
-        {
-            return ColorUtils.setInkColor(new ItemStack(splattershot.get()), ColorUtils.ORANGE);
-        }
-    };
+    public static final CreativeModeTab GROUP_WEAPONS = CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.splatcraft_weapons"))
+            .icon(() -> ColorUtils.setInkColor(new ItemStack(splattershot.get()), ColorUtils.ORANGE))
+            .build();
 
     public static final ArrayList<Item> colorTabItems = new ArrayList<>();
 
-    public static final CreativeModeTab GROUP_COLORS = new CreativeModeTab("splatcraft_colors")
-    {
-
-        @Override
-        public boolean hasSearchBar() {
-            return true;
-        }
-
-        @Override
-        public ItemStack makeIcon() {
-            return ColorUtils.setInkColor(new ItemStack(inkwell.get()), ColorUtils.ORANGE);
-        }
-
-        @Override
-        public void fillItemList(NonNullList<ItemStack> list)
-        {
-            for(Item item : colorTabItems)
-            {
-                for(InkColor color : SplatcraftInkColors.REGISTRY.get().getValues().stream().sorted().toList())
-                    list.add(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(item), color.getColor()), true));
-                if(!(item instanceof ColoredBlockItem coloredBlockItem) || coloredBlockItem.matchesColor())
-                    list.add(ColorUtils.setInverted(new ItemStack(item), true));
-            }
-        }
-    }.setBackgroundImage(new ResourceLocation("textures/gui/container/creative_inventory/tab_item_search.png"));
+    public static final CreativeModeTab GROUP_COLORS = CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.splatcraft_colors"))
+            .withSearchBar()
+            .icon(() -> ColorUtils.setInkColor(new ItemStack(inkwell.get()), ColorUtils.ORANGE))
+            .displayItems((pParameters, pOutput) -> {
+                for(Item item : colorTabItems)
+                {
+                    for(InkColor color : SplatcraftInkColors.REGISTRY.get().getValues().stream().sorted().toList())
+                        pOutput.accept(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(item), color.getColor()), true));
+                    if(!(item instanceof ColoredBlockItem coloredBlockItem) || coloredBlockItem.matchesColor())
+                        pOutput.accept(ColorUtils.setInverted(new ItemStack(item), true));
+                }
+            })
+            .build();
 }

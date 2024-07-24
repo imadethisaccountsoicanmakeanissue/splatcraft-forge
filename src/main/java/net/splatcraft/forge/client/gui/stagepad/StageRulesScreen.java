@@ -167,18 +167,18 @@ public class StageRulesScreen extends AbstractStagePadScreen
 			super(10,24, 144, 12, (b) -> {}, ((button, poseStack, mouseX, mouseY) ->
 			{
 
-				ArrayList<FormattedCharSequence> lines = new ArrayList<>(font.split(new TranslatableComponent(rule.getDescriptionId()), 150));
+				ArrayList<FormattedCharSequence> lines = new ArrayList<>(font.split(Component.translatable(rule.getDescriptionId()), 150));
 
 				lines.add(new TextComponent(rule.getId().replace(Splatcraft.MODID + ".", "")).withStyle(ChatFormatting.YELLOW).getVisualOrderText());
 
 				String descriptionKey = rule.getDescriptionId() + ".description";
 
 				if(I18n.exists(descriptionKey))
-					lines.addAll(font.split(new TranslatableComponent(descriptionKey).withStyle(ChatFormatting.GRAY), 150));
+					lines.addAll(font.split(Component.translatable(descriptionKey).withStyle(ChatFormatting.GRAY), 150));
 
 				renderTooltip(poseStack, lines, mouseX, mouseY);
 			}), (ps, b) -> {}, ButtonColor.GREEN);
-			setMessage(new TranslatableComponent(rule.getDescriptionId()));
+			setMessage(Component.translatable(rule.getDescriptionId()));
 		}
 
 		@Override
@@ -219,9 +219,9 @@ public class StageRulesScreen extends AbstractStagePadScreen
 				if(heldButton == null || heldButton.rule.equals(rule) /*can't ref to self before super, so this'll have to do*/)
 				{
 					Boolean value = rules.get(rule).value;
-					showText(value == null ? new TranslatableComponent("gui.stage_pad.button.rule_value.default",
-							new TranslatableComponent("gui.stage_pad.button.rule_value." + (SplatcraftGameRules.getClientsideBooleanValue(rule) ? "on" : "off"))) :
-							new TranslatableComponent("gui.stage_pad.button.rule_value." + (value ? "on" : "off"))).onTooltip(button, poseStack, mouseX, mouseY);
+					showText(value == null ? Component.translatable("gui.stage_pad.button.rule_value.default",
+							Component.translatable("gui.stage_pad.button.rule_value." + (SplatcraftGameRules.getClientsideBooleanValue(rule) ? "on" : "off"))) :
+							Component.translatable("gui.stage_pad.button.rule_value." + (value ? "on" : "off"))).onTooltip(button, poseStack, mouseX, mouseY);
 				}
 			}, (poseStack, button) -> {}, ButtonColor.LIME);
 

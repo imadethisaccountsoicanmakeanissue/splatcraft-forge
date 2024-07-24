@@ -161,13 +161,13 @@ public class InkDamageUtils {
 
             if(getEntity() == null && entity == null)
             {
-                return !weapon.isEmpty() ? new TranslatableComponent(base + ".item", entityLivingBaseIn.getDisplayName(), weapon.getDisplayName()) : new TranslatableComponent(base, entityLivingBaseIn.getDisplayName());
+                return !weapon.isEmpty() ? Component.translatable(base + ".item", entityLivingBaseIn.getDisplayName(), weapon.getDisplayName()) : Component.translatable(base, entityLivingBaseIn.getDisplayName());
             }
             base += ".player";
 
             Component itextcomponent = this.getEntity() == null ? Objects.requireNonNull(this.entity).getDisplayName() : this.getEntity().getDisplayName();
 
-            return !weapon.isEmpty() ? new TranslatableComponent(base + ".item", entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getDisplayName()) : new TranslatableComponent(base, entityLivingBaseIn.getDisplayName(), itextcomponent);
+            return !weapon.isEmpty() ? Component.translatable(base + ".item", entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getDisplayName()) : Component.translatable(base, entityLivingBaseIn.getDisplayName(), itextcomponent);
         }
     }
 }
