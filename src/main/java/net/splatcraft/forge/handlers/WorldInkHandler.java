@@ -181,8 +181,7 @@ public class WorldInkHandler
 						blockCount++;
 					}
 				}
-			}
-			else if(event.world.isClientSide)
+			} else if (event.world.isClientSide())
 			{
 				new ArrayList<>(INK_CACHE.keySet()).forEach(chunkPos ->
 				{

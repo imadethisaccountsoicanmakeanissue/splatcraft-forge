@@ -6,12 +6,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.splatcraft.forge.commands.InkColorCommand;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
-
-import java.util.concurrent.CompletableFuture;
 
 public class ColorCriterionArgument extends InkColorArgument
 {

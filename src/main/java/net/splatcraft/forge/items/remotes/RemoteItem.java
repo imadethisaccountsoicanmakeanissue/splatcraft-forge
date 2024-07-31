@@ -2,6 +2,11 @@ package net.splatcraft.forge.items.remotes;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import java.awt.TextComponent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.resources.language.I18n;
@@ -12,7 +17,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -37,11 +44,6 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
 
 public abstract class RemoteItem extends Item implements CommandSource
 {
@@ -180,7 +182,7 @@ public abstract class RemoteItem extends Item implements CommandSource
     @Override
     public InteractionResult useOn(UseOnContext context)
     {
-        if (context.getLevel().isClientSide)
+        if (context.getLevel().isClientSide())
         {
             return hasCoordSet(context.getItemInHand()) ? InteractionResult.PASS : InteractionResult.SUCCESS;
         }
@@ -207,11 +209,11 @@ public abstract class RemoteItem extends Item implements CommandSource
             mode = cycleRemoteMode(stack);
             String statusMsg = getDescriptionId() + ".mode." + mode;
 
-            if (levelIn.isClientSide && I18n.exists(statusMsg))
+            if (levelIn.isClientSide() && I18n.exists(statusMsg))
             {
                 playerIn.displayClientMessage(Component.translatable("status.remote_mode", Component.translatable(statusMsg)), true);
             }
-        } else if (hasCoordSet(stack) && !levelIn.isClientSide)
+        } else if (hasCoordSet(stack) && !levelIn.isClientSide())
         {
             RemoteResult remoteResult = onRemoteUse(levelIn, stack, ColorUtils.getPlayerColor(playerIn), playerIn.position(), playerIn);
 

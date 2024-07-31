@@ -74,7 +74,7 @@ public class CommonUtils
     }
 
     public static void spawnItem(Level levelIn, BlockPos pos, ItemStack stack) {
-        if (!levelIn.isClientSide && !stack.isEmpty())
+        if (!levelIn.isClientSide() && !stack.isEmpty())
         {
             double d0 = (double)(levelIn.random.nextFloat() * 0.5F) + 0.25D;
             double d1 = (double)(levelIn.random.nextFloat() * 0.5F) + 0.25D;

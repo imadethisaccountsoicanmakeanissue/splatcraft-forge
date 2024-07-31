@@ -54,7 +54,7 @@ public class StagePadItem extends Item implements IColoredItem
 		ItemStack itemstack = player.getItemInHand(hand);
 		player.awardStat(Stats.ITEM_USED.get(this));
 
-		if(level.isClientSide)
+        if (level.isClientSide())
 			clientUseAction.apply(level, player, hand, itemstack, null);
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
 	}
@@ -62,7 +62,7 @@ public class StagePadItem extends Item implements IColoredItem
 	@Override
 	public InteractionResult useOn(UseOnContext context)
 	{
-		if(context.getLevel().isClientSide)
+        if (context.getLevel().isClientSide())
 			clientUseAction.apply(context.getLevel(), context.getPlayer(), context.getHand(), context.getItemInHand(), context.getClickedPos());
 
 		return InteractionResultHolder.sidedSuccess(context.getItemInHand(), context.getLevel().isClientSide()).getResult();

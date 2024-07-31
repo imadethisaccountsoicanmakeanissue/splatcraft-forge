@@ -45,7 +45,7 @@ public class BlasterItem extends WeaponBaseItem<BlasterWeaponSettings>
         {
             BlasterWeaponSettings settings = getSettings(stack);
             PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, settings.startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 cooldownTracker.addCooldown(this, settings.endlagTicks);
             }
         }
@@ -53,7 +53,7 @@ public class BlasterItem extends WeaponBaseItem<BlasterWeaponSettings>
 
     @Override
     public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
-        if (!level.isClientSide)
+        if (!level.isClientSide())
         {
             BlasterWeaponSettings settings = getSettings(stack);
             if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {

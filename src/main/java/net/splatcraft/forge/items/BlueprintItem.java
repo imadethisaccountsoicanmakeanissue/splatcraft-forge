@@ -1,8 +1,14 @@
 package net.splatcraft.forge.items;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -10,7 +16,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -25,14 +30,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.items.weapons.*;
+import net.splatcraft.forge.items.weapons.BlasterItem;
+import net.splatcraft.forge.items.weapons.ChargerItem;
+import net.splatcraft.forge.items.weapons.DualieItem;
+import net.splatcraft.forge.items.weapons.RollerItem;
+import net.splatcraft.forge.items.weapons.ShooterItem;
+import net.splatcraft.forge.items.weapons.SlosherItem;
+import net.splatcraft.forge.items.weapons.SplatlingItem;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class BlueprintItem extends Item
 {

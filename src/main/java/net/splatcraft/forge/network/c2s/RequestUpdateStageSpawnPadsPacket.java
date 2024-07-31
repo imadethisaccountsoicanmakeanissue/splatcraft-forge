@@ -34,7 +34,7 @@ public class RequestUpdateStageSpawnPadsPacket extends PlayC2SPacket
 	@Override
 	public void execute(Player player)
 	{
-		Stage.getStage(player.level, stageId).updateSpawnPads(player.level);
+        Stage.getStage(player.level(), stageId).updateSpawnPads(player.level());
 		SplatcraftPacketHandler.sendToPlayer(SendStageWarpDataToPadPacket.compile(player), (ServerPlayer) player);
 	}
 }

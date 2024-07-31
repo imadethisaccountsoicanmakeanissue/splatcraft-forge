@@ -1,5 +1,9 @@
 package net.splatcraft.forge.data.capabilities.saveinfo;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -9,11 +13,6 @@ import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SaveInfo
 {
@@ -50,7 +49,7 @@ public class SaveInfo
 
     public boolean createOrEditStage(Level stageLevel, String stageId, BlockPos corner1, BlockPos corner2, Component stageName)
     {
-        if(stageLevel.isClientSide)
+        if (stageLevel.isClientSide())
             return false;
 
         if(stages.containsKey(stageId))
@@ -67,7 +66,7 @@ public class SaveInfo
     }
     public boolean createStage(Level level, String stageId, BlockPos corner1, BlockPos corner2, Component stageName)
     {
-        if(level.isClientSide)
+        if (level.isClientSide())
             return false;
 
         if(stages.containsKey(stageId))

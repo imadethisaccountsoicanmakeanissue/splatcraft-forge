@@ -131,7 +131,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     @Override
     public boolean hurt(DamageSource source, float amount)
     {
-        if (!this.level.isClientSide && this.isAlive())
+        if (!this.level.isClientSide() && this.isAlive())
         {
             if (DamageSource.OUT_OF_WORLD.equals(source))
             {
@@ -253,21 +253,21 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
         switch (id)
         {
             case 31:
-                if (this.level.isClientSide)
+                if (this.level.isClientSide())
                 {
                     hurtCooldown = level.getGameTime();
                     this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperInk, this.getSoundSource(), 0.3F, 1.0F, false);
                 }
                 break;
             case 32:
-                if (this.level.isClientSide)
+                if (this.level.isClientSide())
                 {
                     this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperHit, this.getSoundSource(), 0.3F, 1.0F, false);
                     this.punchCooldown = this.level.getGameTime();
                 }
                 break;
             case 34:
-                if (this.level.isClientSide)
+                if (this.level.isClientSide())
                 {
                     this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperPop, this.getSoundSource(), 0.5F, 20.0F, false);
                     InkOverlayCapability.get(this).setAmount(0);
@@ -449,7 +449,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
         this.level.broadcastEntityEvent(this, (byte) 31);
         hurtCooldown = invulnerableTime;
 
-        if (!level.isClientSide)
+        if (!level.isClientSide())
             if(!isInWater() && InkOverlayCapability.hasCapability(this))
             {
                 InkOverlayInfo info = InkOverlayCapability.get(this);

@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -123,7 +123,8 @@ public class SplatcraftKeyHandler {
         {
             ItemStack sub = CommonUtils.getItemInInventory(player, itemStack -> itemStack.getItem() instanceof SubWeaponItem);
 
-            if (sub.isEmpty() || (info.isSquid() && player.level.getBlockCollisions(player,
+            if (sub.isEmpty() || (info.isSquid() && player.level().getBlockCollisions(
+                    player,
                     new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext())) {
                 player.displayClientMessage(Component.translatable("status.cant_use"), true);
             } else {
@@ -163,7 +164,8 @@ public class SplatcraftKeyHandler {
 
 
         if (player.getVehicle() == null &&
-                !player.level.getBlockCollisions(player,
+                !player.level().getBlockCollisions(
+                        player,
                         new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext()) {
             if (squidKey.equals(last) || !squidKey.active) {
                 ClientUtils.setSquid(info, squidKey.active);

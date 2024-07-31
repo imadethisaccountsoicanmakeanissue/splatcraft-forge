@@ -1,17 +1,14 @@
 package net.splatcraft.forge.network.s2c;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.client.gui.stagepad.StageSelectionScreen;
 import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.Stage;
-import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 {
@@ -46,7 +43,7 @@ public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 
 	public static SendStageWarpDataToPadPacket compile(Player player)
 	{
-		ArrayList<Stage> stages = Stage.getAllStages(player.level);
+        ArrayList<Stage> stages = Stage.getAllStages(player.level());
 
 		ArrayList<Stage> needsUpdate = new ArrayList<>();
 		for (Stage stage : stages)

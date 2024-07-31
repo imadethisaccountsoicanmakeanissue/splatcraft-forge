@@ -70,8 +70,9 @@ public class WeaponHandler {
 			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
 			ItemStack stack = cooldown.storedStack;
 
-			if (stack.getItem() instanceof WeaponBaseItem weapon)
-				weapon.onPlayerCooldownEnd(player.level, player, stack, cooldown);
+            if (stack.getItem() instanceof WeaponBaseItem weapon) {
+                weapon.onPlayerCooldownEnd(player.level(), player, stack, cooldown);
+            }
 			PlayerCooldown.setPlayerCooldown(player, null);
 		}
         else if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
@@ -83,16 +84,17 @@ public class WeaponHandler {
 
 	        if (stack.getItem() instanceof WeaponBaseItem<?> weapon)
 			{
-				if (cooldown.getTime() == 1)
-					weapon.onPlayerCooldownEnd(player.level, player, stack, cooldown);
-				else if (cooldown.getTime() > 1)
-					weapon.onPlayerCooldownTick(player.level, player, stack, cooldown);
+                if (cooldown.getTime() == 1) {
+                    weapon.onPlayerCooldownEnd(player.level(), player, stack, cooldown);
+                } else if (cooldown.getTime() > 1) {
+                    weapon.onPlayerCooldownTick(player.level(), player, stack, cooldown);
+                }
 			}
 		}
 		if (canUseWeapon && player.getUseItemRemainingTicks() > 0 && !CommonUtils.anyWeaponOnCooldown(player)) {
 			ItemStack stack = player.getItemInHand(player.getUsedItemHand());
 			if (stack.getItem() instanceof WeaponBaseItem<?> weapon) {
-				weapon.weaponUseTick(player.level, player, stack, player.getUseItemRemainingTicks());
+                weapon.weaponUseTick(player.level(), player, stack, player.getUseItemRemainingTicks());
 				player.setSprinting(false);
 			}
 		} else {

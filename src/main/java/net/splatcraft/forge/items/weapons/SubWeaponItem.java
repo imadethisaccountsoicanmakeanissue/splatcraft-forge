@@ -7,7 +7,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -232,7 +232,7 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
             oldStack.getTag().remove("EntityData");
             newStack.getTag().remove("EntityData");
 
-            return !ItemStack.isSame(oldStack, newStack);
+            return !ItemStack.isSameItem(oldStack, newStack);
         }
 
         return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);

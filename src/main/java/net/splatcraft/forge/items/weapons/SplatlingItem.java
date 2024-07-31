@@ -99,7 +99,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 
 		SplatlingWeaponSettings settings = getSettings(stack);
 
-		if (level.isClientSide)
+        if (level.isClientSide())
 		{
 
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
@@ -128,7 +128,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		if(cooldown.getTime() > 0)
 		{
-			if(!level.isClientSide)
+            if (!level.isClientSide())
 			{
 				SplatlingWeaponSettings settings = getSettings(stack);
 
@@ -151,7 +151,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	@Override
 	public void onPlayerCooldownTick(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
 	{
-		if(level.isClientSide)
+        if (level.isClientSide())
 			return;
 
 		SplatlingWeaponSettings settings = getSettings(stack);
@@ -193,7 +193,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		super.releaseUsing(stack, level, entity, timeLeft);
 
-		if (level.isClientSide && entity instanceof Player player && player.equals(Minecraft.getInstance().player))
+        if (level.isClientSide() && entity instanceof Player player && player.equals(Minecraft.getInstance().player))
 		{
 			if(PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).preventWeaponUse())
 				return;

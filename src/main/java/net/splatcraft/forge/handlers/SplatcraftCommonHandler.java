@@ -197,7 +197,7 @@ public class SplatcraftCommonHandler {
             return;
         }
 
-        if (!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.KEEP_MATCH_ITEMS)) {
+        if (!player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.KEEP_MATCH_ITEMS)) {
             PlayerInfo playerCapability;
             try {
                 playerCapability = PlayerInfoCapability.get(player);
@@ -308,7 +308,7 @@ public class SplatcraftCommonHandler {
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
         Level level = event.world;
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         for (Map.Entry<Integer, Boolean> rule : SplatcraftGameRules.booleanRules.entrySet()) {

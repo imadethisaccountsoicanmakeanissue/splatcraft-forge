@@ -108,11 +108,11 @@ public class SplatcraftGameRules {
     }
 
     public static boolean getBooleanRuleValue(Level level, GameRules.Key<GameRules.BooleanValue> rule) {
-        return level.isClientSide ? getClientsideBooleanValue(rule) : level.getGameRules().getBoolean(rule);
+        return level.isClientSide() ? getClientsideBooleanValue(rule) : level.getGameRules().getBoolean(rule);
     }
 
     public static int getIntRuleValue(Level level, GameRules.Key<GameRules.IntegerValue> rule) {
-        return level.isClientSide ? getClientsideIntValue(rule) : level.getGameRules().getInt(rule);
+        return level.isClientSide() ? getClientsideIntValue(rule) : level.getGameRules().getInt(rule);
     }
 
     public static boolean getClientsideBooleanValue(GameRules.Key<GameRules.BooleanValue> rule) {

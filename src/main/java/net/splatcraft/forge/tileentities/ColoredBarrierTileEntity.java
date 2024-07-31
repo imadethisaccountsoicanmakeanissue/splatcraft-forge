@@ -43,7 +43,7 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity implements 
                     resetActiveTime();
         }
 
-        if (level.isClientSide && ClientUtils.getClientPlayer().isCreative())
+        if (level.isClientSide() && ClientUtils.getClientPlayer().isCreative())
         {
             boolean canRender = true;
             Player player = ClientUtils.getClientPlayer();

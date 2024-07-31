@@ -4,7 +4,6 @@ import com.mojang.math.Vector3f;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
@@ -74,7 +73,7 @@ public class ClientUtils
     {
         Player player = getClientPlayer();
 
-        if (!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.REQUIRE_INK_TANK))
+        if (!SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.REQUIRE_INK_TANK))
         {
             return 0;
         }

@@ -1,5 +1,6 @@
 package net.splatcraft.forge.entities.subs;
 
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,8 +29,6 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
-
-import java.util.List;
 
 public class CurlingBombEntity extends AbstractSubWeaponEntity
 {
@@ -108,7 +107,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			playedActivationSound = true;
 		}
 
-		if(!level.isClientSide)
+        if (!level.isClientSide())
 			for(int i = 0; i <= 2; i++)
 				if(InkBlockUtils.canInkFromFace(level, blockPosition().below(i), Direction.UP))
 				{

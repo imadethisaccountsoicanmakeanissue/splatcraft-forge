@@ -16,7 +16,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
@@ -35,7 +39,13 @@ import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.SplatlingItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.items.weapons.settings.*;
+import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.BlasterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.DualieWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ShooterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SlosherWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -271,7 +281,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         if(isRemoved())
             return;
 
-        if (!level.isClientSide && !persistent && lifespan-- <= 0)
+        if (!level.isClientSide() && !persistent && lifespan-- <= 0)
         {
             float dmg = damage.calculateDamage(this.tickCount - Math.max(0, straightShotTime), throwerAirborne, charge, isOnRollCooldown);
             InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), impactCoverage, dmg, explodes ? damage.getMinDamage() : dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
@@ -373,7 +383,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
             } else
                 level.broadcastEntityEvent(this, (byte) 2);
 
-            if (!level.isClientSide)
+            if (!level.isClientSide())
                 discard();
         }
     }
@@ -397,7 +407,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         } else if (level.getBlockState(result.getBlockPos()).getBlock() instanceof StageBarrierBlock)
             level.broadcastEntityEvent(this, (byte) -1);
         else level.broadcastEntityEvent(this, (byte) 2);
-        if (!level.isClientSide)
+        if (!level.isClientSide())
             this.discard();
     }
 

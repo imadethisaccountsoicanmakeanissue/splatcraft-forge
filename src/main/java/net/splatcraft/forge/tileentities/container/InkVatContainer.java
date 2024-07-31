@@ -1,6 +1,9 @@
 package net.splatcraft.forge.tileentities.container;
 
 import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -18,13 +21,13 @@ import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
-import net.splatcraft.forge.registries.*;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftInkColors;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftStats;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.util.InkColor;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 public class InkVatContainer extends AbstractContainerMenu {
     public final InkVatTileEntity te;
@@ -64,7 +67,7 @@ public class InkVatContainer extends AbstractContainerMenu {
         Objects.requireNonNull(inventory);
         Objects.requireNonNull(buffer);
 
-        final BlockEntity te = inventory.player.level.getBlockEntity(buffer.readBlockPos());
+        final BlockEntity te = inventory.player.level().getBlockEntity(buffer.readBlockPos());
 
         if (te instanceof InkVatTileEntity) {
             return (InkVatTileEntity) te;
@@ -156,7 +159,7 @@ public class InkVatContainer extends AbstractContainerMenu {
     {
         te.pointer = pointer;
 
-        if (te.getLevel().isClientSide)
+        if (te.getLevel().isClientSide())
         {
             SplatcraftPacketHandler.sendToServer(new UpdateBlockColorPacket(te.getBlockPos(), color, pointer));
         } else if (te.getBlockState().getBlock() instanceof InkVatBlock)

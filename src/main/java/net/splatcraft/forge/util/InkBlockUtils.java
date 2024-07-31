@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
@@ -64,7 +63,7 @@ public class InkBlockUtils {
             if (update)
             {
                 chunk.setUnsaved(true);
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     WorldInk.Entry newInk = worldInk.getInk(relative);
                     if (newInk != null) {
                         SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, newInk.color(), newInk.type()), chunk);
@@ -115,7 +114,7 @@ public class InkBlockUtils {
                 isBlockFoliage(level.getBlockState(pos.above())))
                 level.destroyBlock(pos.above(), true);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, color, inkType), chunk);
         }
 
@@ -136,7 +135,7 @@ public class InkBlockUtils {
             return BlockInkedResult.FAIL;
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             worldInk.setPermanentInk(relative, ink.color(), ink.type());
             chunk.setUnsaved(true);
             SplatcraftPacketHandler.sendToTrackers(new UpdateInkPacket(pos, ink.color(), ink.type()), chunk);

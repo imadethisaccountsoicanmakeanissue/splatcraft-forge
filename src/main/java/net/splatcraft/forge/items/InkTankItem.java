@@ -6,8 +6,6 @@ import java.util.function.Consumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -104,7 +102,7 @@ public class InkTankItem extends ColoredArmorItem {
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof Player player && !level.isClientSide && SplatcraftGameRules.getLocalizedRule(level, entity.blockPosition(), SplatcraftGameRules.RECHARGEABLE_INK_TANK)) {
+        if (entity instanceof Player player && !level.isClientSide() && SplatcraftGameRules.getLocalizedRule(level, entity.blockPosition(), SplatcraftGameRules.RECHARGEABLE_INK_TANK)) {
             float ink = getInkAmount(stack);
             Item using = player.getUseItem().getItem();
 

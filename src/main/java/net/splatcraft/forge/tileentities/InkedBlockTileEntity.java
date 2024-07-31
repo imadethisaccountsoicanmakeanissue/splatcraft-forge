@@ -38,7 +38,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
     //Used to port Inked Blocks to World Ink system
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T te)
     {
-        if (!level.isClientSide && te instanceof InkedBlockTileEntity inkedBlock)
+        if (!level.isClientSide() && te instanceof InkedBlockTileEntity inkedBlock)
         {
             if(inkedBlock.hasSavedState())
             {

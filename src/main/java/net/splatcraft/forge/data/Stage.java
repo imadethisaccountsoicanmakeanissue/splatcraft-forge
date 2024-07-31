@@ -234,11 +234,11 @@ public class Stage implements Comparable<Stage> {
 
 	public static ArrayList<Stage> getAllStages(Level level)
 	{
-		return new ArrayList<>(level.isClientSide ? ClientUtils.clientStages.values() : SaveInfoCapability.get(level.getServer()).getStages().values());
+        return new ArrayList<>(level.isClientSide() ? ClientUtils.clientStages.values() : SaveInfoCapability.get(level.getServer()).getStages().values());
 	}
 	public static Stage getStage(Level level, String id)
 	{
-		return (level.isClientSide ? ClientUtils.clientStages : SaveInfoCapability.get(level.getServer()).getStages()).get(id);
+        return (level.isClientSide() ? ClientUtils.clientStages : SaveInfoCapability.get(level.getServer()).getStages()).get(id);
 	}
 
 	public static ArrayList<Stage> getStagesForPosition(Level level, Vec3 pos)
@@ -313,11 +313,11 @@ public class Stage implements Comparable<Stage> {
 
 	public boolean superJumpToStage(ServerPlayer player)
 	{
-		if(!player.level.dimension().location().equals(dimID) || getSpawnPadPositions().isEmpty())
+        if (!player.level().dimension().location().equals(dimID) || getSpawnPadPositions().isEmpty())
 			return false;
 
 		int playerColor = ColorUtils.getPlayerColor(player);
-		HashMap<Integer, ArrayList<SpawnPadTileEntity>> spawnPads = getSpawnPads(player.level);
+        HashMap<Integer, ArrayList<SpawnPadTileEntity>> spawnPads = getSpawnPads(player.level());
 
 		if(!spawnPads.containsKey(playerColor))
 		{
@@ -328,7 +328,7 @@ public class Stage implements Comparable<Stage> {
 		BlockPos targetPos = spawnPads.get(playerColor).get(player.getRandom().nextInt(spawnPads.get(playerColor).size())).getBlockPos();
 
 
-		return SuperJumpCommand.superJump(player, new Vec3(targetPos.getX() + 0.5, targetPos.getY() + SuperJumpCommand.blockHeight(targetPos, player.level), targetPos.getZ() + 0.5));
+        return SuperJumpCommand.superJump(player, new Vec3(targetPos.getX() + 0.5, targetPos.getY() + SuperJumpCommand.blockHeight(targetPos, player.level()), targetPos.getZ() + 0.5));
 	}
 
 

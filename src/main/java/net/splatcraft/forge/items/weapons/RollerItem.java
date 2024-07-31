@@ -1,6 +1,7 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.BlockPos;
@@ -30,9 +31,11 @@ import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.*;
-
-import java.util.ArrayList;
+import net.splatcraft.forge.util.BlockInkedResult;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.InkDamageUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
 
 public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
     public static final ArrayList<RollerItem> rollers = Lists.newArrayList();
@@ -111,7 +114,7 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
         }
 
         float toConsume = Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption;
-        isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
+        isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide() ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
                 : entity.position().multiply(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((Player) entity).multiply(1, 0, 1)) > 0);
 
         double dxOff = 0;
@@ -173,7 +176,7 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
                     }
                 }
 
-                if (level.isClientSide) {
+                if (level.isClientSide()) {
                     // Damage and knockback are dealt server-side
                     continue;
                 }
@@ -208,7 +211,7 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
         boolean airborne = !cooldown.isGrounded();
         RollerWeaponSettings settings = getSettings(stack);
 
-        if (level.isClientSide)
+        if (level.isClientSide())
             playRollSound(settings.isBrush);
 
         if (!settings.isBrush && reduceInk(player, this, airborne ? settings.flingConsumption : settings.swingConsumption, airborne ? settings.flingInkRecoveryCooldown : settings.swingInkRecoveryCooldown, true)) {

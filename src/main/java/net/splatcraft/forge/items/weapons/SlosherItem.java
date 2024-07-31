@@ -53,7 +53,7 @@ public class SlosherItem extends WeaponBaseItem<SlosherWeaponSettings>
             ItemCooldowns cooldownTracker = ((Player) entity).getCooldowns();
             if (!cooldownTracker.isOnCooldown(this)) {
                 PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, settings.startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
-                if (!level.isClientSide && settings.endlagTicks > 0) {
+                if (!level.isClientSide() && settings.endlagTicks > 0) {
                     cooldownTracker.addCooldown(this, settings.endlagTicks);
                 }
             }
@@ -65,7 +65,7 @@ public class SlosherItem extends WeaponBaseItem<SlosherWeaponSettings>
     {
         SlosherWeaponSettings settings = getSettings(stack);
 
-        if (!level.isClientSide && reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
+        if (!level.isClientSide() && reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
             for (int i = 0; i < settings.projectileCount; i++) {
                 boolean hasTrail = i == Math.floor((settings.projectileCount - 1) / 2f) || i == Math.ceil((settings.projectileCount - 1) / 2f);
                 float angle = settings.angleOffset * i - settings.angleOffset * (settings.projectileCount - 1) / 2;

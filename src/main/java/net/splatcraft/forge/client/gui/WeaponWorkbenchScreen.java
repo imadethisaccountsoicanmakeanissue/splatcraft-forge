@@ -4,12 +4,12 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Quaternion;
+import java.awt.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -23,6 +23,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -40,6 +41,7 @@ import net.splatcraft.forge.util.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.joml.Quaternionf;
 
 public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkbenchContainer>
 {
@@ -68,18 +70,16 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
-    {
-        renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        renderTooltip(matrixStack, mouseX, mouseY);
+    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        renderBackground(pGuiGraphics);
+        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+        renderTooltip(pGuiGraphics, pMouseX, pMouseY);
 
         tickTime++;
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY)
-    {
+    protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.setShaderTexture(0, TEXTURES);
         if (minecraft != null)
@@ -89,7 +89,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
 
             blit(matrixStack, x, y, 0, 0, imageWidth, imageHeight);
 
-            Level level = player.level;
+            Level level = player.level();
             List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
             tabList.removeIf(tab -> tab.hidden && tab.getTabRecipes(level, player).isEmpty());
             tabList.sort(WeaponWorkbenchTab::compareTo);
@@ -126,9 +126,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         PoseStack displayStackMatrix = new PoseStack();
         displayStackMatrix.translate(x + 88 + i * 26, y + 73, 100);
         displayStackMatrix.scale(scale, scale, scale);
-        displayStackMatrix.mulPose(new Quaternion(0, 1, 0, 0));
-
-
+        displayStackMatrix.mulPose(new Quaternionf(0, 1, 0, 0));
 
         MultiBufferSource.BufferSource irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
         int light = 15728880;
@@ -137,7 +135,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
             ItemRenderer itemRenderer = minecraft.getItemRenderer();
             if (itemRenderer != null)
             {
-                minecraft.getItemRenderer().render(displayStack, ItemTransforms.TransformType.GUI, false, displayStackMatrix, irendertypebuffer$impl, light, OverlayTexture.NO_OVERLAY, minecraft.getItemRenderer().getModel(displayStack, level, player, 0));
+                minecraft.getItemRenderer().render(displayStack, ItemDisplayContext.GUI, false, displayStackMatrix, irendertypebuffer$impl, light, OverlayTexture.NO_OVERLAY, minecraft.getItemRenderer().getModel(displayStack, level, player, 0));
             }
         }
 
@@ -152,7 +150,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         font.draw(matrixStack, title.getString(), (float) imageWidth / 2 - (float) font.width(title.getString()) / 2, 22, 4210752);
         this.font.draw(matrixStack, this.inventory.getDisplayName(), (float) this.titleLabelX, (float) this.titleLabelY, 4210752);
 
-        Level level = player.level;
+        Level level = player.level();
         List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
         tabList.removeIf(tab -> tab.hidden && tab.getTabRecipes(level, player).isEmpty());
@@ -461,7 +459,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        Level level = player.level;
+        Level level = player.level();
         List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
         tabList.removeIf(tab -> tab.hidden && tab.getTabRecipes(level, player).isEmpty());

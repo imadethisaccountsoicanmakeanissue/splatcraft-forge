@@ -5,10 +5,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -84,7 +84,7 @@ public class ColorUtils
 
     public static int getPlayerColor(LivingEntity player)
     {
-        if(player.level.isClientSide && player instanceof Player p)
+        if (player.level().isClientSide() && player instanceof Player p)
             return ClientUtils.getClientPlayerColor(p.getGameProfile().getId());
         if(PlayerInfoCapability.hasCapability(player))
             return PlayerInfoCapability.get(player).getColor();
@@ -103,8 +103,8 @@ public class ColorUtils
 
         }
 
-        Level level = player.level;
-        if (!level.isClientSide && updateClient)
+        Level level = player.level();
+        if (!level.isClientSide() && updateClient)
         {
             SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerColorPacket(player, color), player);
         }

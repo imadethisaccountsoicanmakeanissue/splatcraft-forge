@@ -32,6 +32,6 @@ public class SuperJumpToStagePacket extends PlayC2SPacket
 	@Override
 	public void execute(Player player)
 	{
-		Stage.getStage(player.level, stageId).superJumpToStage((ServerPlayer) player);
+        Stage.getStage(player.level(), stageId).superJumpToStage((ServerPlayer) player);
 	}
 }

@@ -5,7 +5,6 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,12 +21,10 @@ import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.ReleaseChargePacket;
-import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 
 public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implements IChargeableWeapon {
@@ -85,7 +82,7 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 	@Override
 	public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
-		if(!level.isClientSide)
+        if (!level.isClientSide())
 		{
 			if(timeLeft % 4 == 0 && !enoughInk(entity, this, 0.1f, 0, false))
 				playNoInkSound(entity, SplatcraftSounds.noInkMain);
@@ -116,7 +113,7 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 	public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeLeft) {
 		super.releaseUsing(stack, level, entity, timeLeft);
 
-		if (level.isClientSide && !PlayerInfoCapability.isSquid(entity) && entity instanceof Player player) {
+        if (level.isClientSide() && !PlayerInfoCapability.isSquid(entity) && entity instanceof Player player) {
 			PlayerCharge charge = PlayerCharge.getCharge(player);
 			if (charge != null && charge.charge > 0.05f)
 			{

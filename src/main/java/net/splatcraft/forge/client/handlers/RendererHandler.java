@@ -4,6 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
+import java.awt.TextComponent;
+import java.util.HashMap;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.PlayerModel;
@@ -20,7 +23,11 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -29,6 +36,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -38,7 +46,10 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.RenderProperties;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderArmEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -54,13 +65,11 @@ import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.IChargeableWeapon;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.util.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import net.splatcraft.forge.util.ClientUtils;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCharge;
+import net.splatcraft.forge.util.PlayerCooldown;
 
 import static net.splatcraft.forge.items.weapons.WeaponBaseItem.enoughInk;
 
@@ -178,11 +187,11 @@ public class RendererHandler
         }
     }
 
-    public static boolean renderSubWeapon(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource source, int light, float partialTicks)
+    public static boolean renderSubWeapon(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, MultiBufferSource source, int light, float partialTicks)
     {
         if(stack.getItem() instanceof SubWeaponItem)
         {
-            AbstractSubWeaponEntity sub = ((SubWeaponItem)stack.getItem()).entityType.get().create(Minecraft.getInstance().player.level);
+            AbstractSubWeaponEntity sub = ((SubWeaponItem) stack.getItem()).entityType.get().create(Minecraft.getInstance().player.level());
             sub.setColor(ColorUtils.getInkColor(stack));
             sub.setItem(stack);
             sub.readItemData(stack.getOrCreateTag().getCompound("EntityData"));
@@ -215,7 +224,7 @@ public class RendererHandler
         p_228399_1_.mulPose(Vector3f.YP.rotationDegrees((float)i * -45.0F));
     }
 
-    public static void renderItem(ItemStack itemStackIn, ItemTransforms.TransformType transformTypeIn, boolean leftHand, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, BakedModel modelIn)
+    public static void renderItem(ItemStack itemStackIn, ItemDisplayContext context, boolean leftHand, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, BakedModel modelIn)
     {
         if (!itemStackIn.isEmpty())
         {
@@ -304,26 +313,30 @@ public class RendererHandler
     public static void onChatMessage(ClientChatReceivedEvent event)
     {
         ClientLevel level = Minecraft.getInstance().level;
-        if (level != null && SplatcraftConfig.Client.coloredPlayerNames.get() && event.getMessage() instanceof TranslatableComponent component)
+        if (level != null && SplatcraftConfig.Client.coloredPlayerNames.get())
         {
-            //TreeMap<String, AbstractClientPlayer> players = Maps.newTreeMap();
-            //Minecraft.getInstance().level.getPlayers().forEach(player -> players.put(player.getDisplayName().getString(), player));
-
-
             HashMap<String, UUID> players = new HashMap<>();
             ClientPacketListener connection = Minecraft.getInstance().getConnection();
-            if (connection != null)
-                connection.getOnlinePlayers().forEach(info -> players.put(getDisplayName(info).getString(), info.getProfile().getId()));
+            if (connection != null) {
+                for (PlayerInfo info : connection.getOnlinePlayers()) {
+                    players.put(getDisplayName(info).getString(), info.getProfile().getId());
+                }
+            }
 
-            for (Object obj : component.getArgs())
-            {
-                if (!(obj instanceof MutableComponent msgChildren))
+            if (!(event.getMessage().getContents() instanceof TranslatableContents translatableContents)) {
+                return;
+            }
+
+            for (Object obj : translatableContents.getArgs()) {
+                if (!(obj instanceof MutableComponent msgChildren)) {
                     continue;
+                }
 
                 String key = msgChildren.getString();
 
-                if (!msgChildren.getSiblings().isEmpty() && players.containsKey(key))
+                if (!msgChildren.getSiblings().isEmpty() && players.containsKey(key)) {
                     msgChildren.setStyle(msgChildren.getStyle().withColor(TextColor.fromRgb(ClientUtils.getClientPlayerColor(players.get(key)))));
+                }
             }
         }
     }

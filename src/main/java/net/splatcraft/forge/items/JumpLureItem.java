@@ -1,5 +1,8 @@
 package net.splatcraft.forge.items;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
@@ -7,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -39,10 +41,6 @@ import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class JumpLureItem extends Item implements IColoredItem
 {
@@ -77,10 +75,89 @@ public class JumpLureItem extends Item implements IColoredItem
 
 	}
 
+	public static void activate(ServerPlayer player, UUID targetUUID, int color)
+	{
+		Vec3 target;
+		if(targetUUID == null)
+		{
+			BlockPos spawnPos = SuperJumpCommand.getSpawnPadPos(player);
+			if(spawnPos != null)
+			{
+                target = new Vec3(spawnPos.getX(), spawnPos.getY() + SuperJumpCommand.blockHeight(spawnPos, player.level()), spawnPos.getZ());
+                if (!SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING) && !SuperJumpCommand.canSuperJumpTo(player, target))
+				{
+					player.sendMessage(new TextComponent("Spawn Pad outside of stage bounds!"), player.getUUID()); //TODO better feedback
+					return;
+				}
+			}
+			else
+			{
+				player.sendMessage(new TextComponent("No valid Spawn Pad was found!"), player.getUUID()); //TODO better feedback
+				return;
+			}
+		}
+		else
+		{
+            Player targetPlayer = player.level().getPlayerByUUID(targetUUID);
+
+            if (targetPlayer == null || !hasMatchingLure(targetPlayer, color) || (!SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING)
+					&& !SuperJumpCommand.canSuperJumpTo(player, targetPlayer.position())))
+			{
+				player.sendMessage(new TextComponent("A communication error has occurred."), player.getUUID()); //TODO better feedback
+				return;
+			}
+			else target = targetPlayer.position();
+		}
+
+		SuperJumpCommand.superJump(player, target);
+	}
+
+	public static boolean hasMatchingLure(Player targetPlayer, int color)
+	{
+		for(int i = 0; i < targetPlayer.getInventory().getContainerSize(); i++)
+			if(targetPlayer.getInventory().getItem(i).getItem() instanceof JumpLureItem &&
+                    ColorUtils.colorEquals(targetplayer.level(), targetPlayer.blockPosition(), color, ColorUtils.getInkColorOrInverted(targetPlayer.getInventory().getItem(i))))
+				return true;
+		return false;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void releaseLure(LivingEntity entity)
+	{
+		if(entity.equals(Minecraft.getInstance().player))
+			JumpLureHudHandler.releaseLure();
+	}
+
+	@Override
+	public UseAnim getUseAnimation(ItemStack p_41452_) {
+		return UseAnim.SPEAR;
+	}
+
+	public static List<? extends Player> getAvailableCandidates(Player player, int color)
+	{
+		ArrayList<Player> players = new ArrayList<>();
+
+        if (SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING)) {
+            players.addAll(player.level().players());
+        } else {
+            ArrayList<Stage> stages = Stage.getStagesForPosition(player.level(), player.position());
+            for (Stage stage : stages) {
+                players.addAll(player.level().getEntitiesOfClass(Player.class, stage.getBounds()));
+            }
+        }
+
+
+		players.removeIf(target ->
+				player.equals(target) || !hasMatchingLure(target, color)
+						&& !SuperJumpCommand.canSuperJumpTo(player, target.position()));
+
+		return players;
+	}
+
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
 	{
-		if(level.isClientSide)
+        if (level.isClientSide())
 			return super.use(level, player, hand);
 
 
@@ -104,89 +181,8 @@ public class JumpLureItem extends Item implements IColoredItem
 	{
 		super.releaseUsing(stack, level, entity, useTime);
 
-		if(level.isClientSide)
+        if (level.isClientSide())
 			releaseLure(entity);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private void releaseLure(LivingEntity entity)
-	{
-		if(entity.equals(Minecraft.getInstance().player))
-			JumpLureHudHandler.releaseLure();
-	}
-
-	@Override
-	public UseAnim getUseAnimation(ItemStack p_41452_) {
-		return UseAnim.SPEAR;
-	}
-
-	public static void activate(ServerPlayer player, UUID targetUUID, int color)
-	{
-		Vec3 target;
-		if(targetUUID == null)
-		{
-			BlockPos spawnPos = SuperJumpCommand.getSpawnPadPos(player);
-			if(spawnPos != null)
-			{
-				target = new Vec3(spawnPos.getX(), spawnPos.getY() + SuperJumpCommand.blockHeight(spawnPos, player.level), spawnPos.getZ());
-				if(!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING) && !SuperJumpCommand.canSuperJumpTo(player, target))
-				{
-					player.sendMessage(new TextComponent("Spawn Pad outside of stage bounds!"), player.getUUID()); //TODO better feedback
-					return;
-				}
-			}
-			else
-			{
-				player.sendMessage(new TextComponent("No valid Spawn Pad was found!"), player.getUUID()); //TODO better feedback
-				return;
-			}
-		}
-		else
-		{
-			Player targetPlayer = player.level.getPlayerByUUID(targetUUID);
-
-			if(targetPlayer == null || !hasMatchingLure(targetPlayer, color) || (!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING)
-					&& !SuperJumpCommand.canSuperJumpTo(player, targetPlayer.position())))
-			{
-				player.sendMessage(new TextComponent("A communication error has occurred."), player.getUUID()); //TODO better feedback
-				return;
-			}
-			else target = targetPlayer.position();
-		}
-
-		SuperJumpCommand.superJump(player, target);
-	}
-
-
-
-	public static boolean hasMatchingLure(Player targetPlayer, int color)
-	{
-		for(int i = 0; i < targetPlayer.getInventory().getContainerSize(); i++)
-			if(targetPlayer.getInventory().getItem(i).getItem() instanceof JumpLureItem &&
-					ColorUtils.colorEquals(targetPlayer.level, targetPlayer.blockPosition(), color, ColorUtils.getInkColorOrInverted(targetPlayer.getInventory().getItem(i))))
-				return true;
-		return false;
-	}
-
-	public static List<? extends Player> getAvailableCandidates(Player player, int color)
-	{
-		ArrayList<Player> players = new ArrayList<>();
-
-		if(SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING))
-			players.addAll(player.level.players());
-		else
-		{
-			ArrayList<Stage> stages = Stage.getStagesForPosition(player.level, player.position());
-			for(Stage stage : stages)
-				players.addAll(player.level.getEntitiesOfClass(Player.class, stage.getBounds()));
-		}
-
-
-		players.removeIf(target ->
-				player.equals(target) || !hasMatchingLure(target, color)
-						&& !SuperJumpCommand.canSuperJumpTo(player, target.position()));
-
-		return players;
 	}
 
 	@Override

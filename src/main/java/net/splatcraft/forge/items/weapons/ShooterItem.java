@@ -57,7 +57,7 @@ public class ShooterItem extends WeaponBaseItem<ShooterWeaponSettings>
                 PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, settings.startupTicks, player.getInventory().selected, player.getUsedItemHand(), true, false, true, player.isOnGround()));
         } else time -= settings.startupTicks;
 
-        if (!level.isClientSide && settings.firingSpeed > 0 && (time - 1) % settings.firingSpeed == 0)
+        if (!level.isClientSide() && settings.firingSpeed > 0 && (time - 1) % settings.firingSpeed == 0)
         {
             if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
 

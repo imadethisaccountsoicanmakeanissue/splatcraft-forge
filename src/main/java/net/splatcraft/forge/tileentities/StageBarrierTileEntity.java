@@ -59,7 +59,7 @@ public class StageBarrierTileEntity extends BlockEntity
 
         }
 
-        if (level.isClientSide && ClientUtils.getClientPlayer().isCreative())
+        if (level.isClientSide() && ClientUtils.getClientPlayer().isCreative())
         {
             boolean canRender = true;
             Player player = ClientUtils.getClientPlayer();

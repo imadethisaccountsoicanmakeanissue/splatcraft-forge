@@ -1,22 +1,16 @@
 package net.splatcraft.forge.items.remotes;
 
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
-import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
-
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class InkDisruptorItem extends RemoteItem
 {

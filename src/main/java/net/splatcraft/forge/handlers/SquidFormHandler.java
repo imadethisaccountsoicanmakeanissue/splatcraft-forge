@@ -60,13 +60,14 @@ public class SquidFormHandler {
         Player player = event.player;
 
         if (InkBlockUtils.onEnemyInk(player)) {
-            if (player.tickCount % 20 == 0 && player.getHealth() > 4 && player.level.getDifficulty() != Difficulty.PEACEFUL)
+            if (player.tickCount % 20 == 0 && player.getHealth() > 4 && player.level().getDifficulty() != Difficulty.PEACEFUL)
                 player.hurt(InkDamageUtils.ENEMY_INK, 2f);
-            if (player.level.getRandom().nextFloat() < 0.7f)
-                ColorUtils.addStandingInkSplashParticle(player.level, player, 1);
+            if (player.level().getRandom().nextFloat() < 0.7f) {
+                ColorUtils.addStandingInkSplashParticle(player.level(), player, 1);
+            }
         }
 
-        if (SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0 && !MobEffectUtil.hasWaterBreathing(player))
+        if (SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0 && !MobEffectUtil.hasWaterBreathing(player))
             player.hurt(InkDamageUtils.WATER, 8f);
 
         if(!PlayerInfoCapability.hasCapability(player))
@@ -88,14 +89,16 @@ public class SquidFormHandler {
 
 
             if (squidSubmergeMode.get(player) == 1) {
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.inkSubmerge, SoundSource.PLAYERS, 0.5F, ((player.level.getRandom().nextFloat() - player.level.getRandom().nextFloat()) * 0.2F + 1.0F) * 0.95F);
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.inkSubmerge, SoundSource.PLAYERS, 0.5F, ((player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F + 1.0F) * 0.95F);
 
-                if (player.level instanceof ServerLevel) {
-                    for (int i = 0; i < 2; i++)
-                        ColorUtils.addInkSplashParticle((ServerLevel) player.level, player, 1.4f);
+                if (player.level() instanceof ServerLevel) {
+                    for (int i = 0; i < 2; i++) {
+                        ColorUtils.addInkSplashParticle((ServerLevel) player.level(), player, 1.4f);
+                    }
                 }
-            } else if (squidSubmergeMode.get(player) == -1)
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.inkSurface, SoundSource.PLAYERS, 0.5F, ((player.level.getRandom().nextFloat() - player.level.getRandom().nextFloat()) * 0.2F + 1.0F) * 0.95F);
+            } else if (squidSubmergeMode.get(player) == -1) {
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.inkSurface, SoundSource.PLAYERS, 0.5F, ((player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F + 1.0F) * 0.95F);
+            }
         }
 
         if (PlayerInfoCapability.isSquid(player)) {
@@ -110,9 +113,9 @@ public class SquidFormHandler {
             player.awardStat(SplatcraftStats.SQUID_TIME);
 
             if (InkBlockUtils.canSquidHide(player)) {
-                if (player.getHealth() < player.getMaxHealth() && SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.INK_HEALING) && player.tickCount % 5 == 0 && !player.hasEffect(MobEffects.POISON) && !player.hasEffect(MobEffects.WITHER)) {
+                if (player.getHealth() < player.getMaxHealth() && SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.INK_HEALING) && player.tickCount % 5 == 0 && !player.hasEffect(MobEffects.POISON) && !player.hasEffect(MobEffects.WITHER)) {
                     player.heal(0.5f);
-                    if (SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.INK_HEALING_CONSUMES_HUNGER))
+                    if (SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.INK_HEALING_CONSUMES_HUNGER))
                         player.causeFoodExhaustion(0.25f);
                     if (InkOverlayCapability.hasCapability(player)) {
                         InkOverlayCapability.get(player).addAmount(-0.49f);
@@ -120,30 +123,32 @@ public class SquidFormHandler {
                 }
 
                 boolean crouch = player.isCrouching();
-                if (player.level.getRandom().nextFloat() <= (crouch ? 0.3f : 0.6f) && (Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14)) {
-                    ColorUtils.addInkSplashParticle(player.level, player, crouch ? 0.8f : 1.1f);
+                if (player.level().getRandom().nextFloat() <= (crouch ? 0.3f : 0.6f) && (Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14)) {
+                    ColorUtils.addInkSplashParticle(player.level(), player, crouch ? 0.8f : 1.1f);
                 }
             }
 
             BlockPos posBelow = InkBlockUtils.getBlockStandingOnPos(player);
-            Block blockBelow = player.level.getBlockState(posBelow).getBlock();
+            Block blockBelow = player.level().getBlockState(posBelow).getBlock();
 
             if (blockBelow instanceof SpawnPadBlock.Aux) {
-                BlockPos newPos = ((SpawnPadBlock.Aux) blockBelow).getParentPos(player.level.getBlockState(posBelow), posBelow);
-                if (player.level.getBlockState(newPos).getBlock() instanceof SpawnPadBlock) {
+                BlockPos newPos = ((SpawnPadBlock.Aux) blockBelow).getParentPos(player.level().getBlockState(posBelow), posBelow);
+                if (player.level().getBlockState(newPos).getBlock() instanceof SpawnPadBlock) {
                     posBelow = newPos;
-                    blockBelow = player.level.getBlockState(newPos).getBlock();
+                    blockBelow = player.level().getBlockState(newPos).getBlock();
                 }
             }
 
-            if (blockBelow instanceof InkwellBlock || (SplatcraftGameRules.getLocalizedRule(player.level, posBelow, SplatcraftGameRules.UNIVERSAL_INK) && blockBelow instanceof SpawnPadBlock))
-                ColorUtils.setPlayerColor(player, ColorUtils.getInkColorOrInverted(player.level, posBelow));
+            if (blockBelow instanceof InkwellBlock || (SplatcraftGameRules.getLocalizedRule(player.level(), posBelow, SplatcraftGameRules.UNIVERSAL_INK) && blockBelow instanceof SpawnPadBlock)) {
+                ColorUtils.setPlayerColor(player, ColorUtils.getInkColorOrInverted(player.level(), posBelow));
+            }
 
             if (blockBelow instanceof SpawnPadBlock) {
-                InkColorTileEntity spawnPad = (InkColorTileEntity) player.level.getBlockEntity(posBelow);
+                InkColorTileEntity spawnPad = (InkColorTileEntity) player.level().getBlockEntity(posBelow);
 
-                if (player instanceof ServerPlayer && ColorUtils.colorEquals(player, spawnPad))
-                    ((ServerPlayer) player).setRespawnPosition(player.level.dimension(), posBelow, player.level.getBlockState(posBelow).getValue(SpawnPadBlock.DIRECTION).toYRot(), false, true);
+                if (player instanceof ServerPlayer && ColorUtils.colorEquals(player, spawnPad)) {
+                    ((ServerPlayer) player).setRespawnPosition(player.level().dimension(), posBelow, player.level().getBlockState(posBelow).getValue(SpawnPadBlock.DIRECTION).toYRot(), false, true);
+                }
 
             }
         }
@@ -222,7 +227,7 @@ public class SquidFormHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onClientLivingTick(LivingEvent.LivingUpdateEvent event) {
-        if (!event.getEntity().level.isClientSide)
+        if (!event.getEntity().level.isClientSide())
             return;
         LivingEntity living = event.getEntityLiving();
         if (InkOverlayCapability.hasCapability(living)) {

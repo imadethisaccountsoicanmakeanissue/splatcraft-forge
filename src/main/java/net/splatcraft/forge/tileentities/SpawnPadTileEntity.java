@@ -1,19 +1,17 @@
 package net.splatcraft.forge.tileentities;
 
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.world.ChunkEvent;
 import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class SpawnPadTileEntity extends InkColorTileEntity
 {
@@ -48,7 +46,7 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 	}
 	public void addToStages()
 	{
-		if(!level.isClientSide)
+        if (!level.isClientSide())
 			for (Stage stage : Stage.getStagesForPosition(level, new Vec3(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ())))
 				stage.addSpawnPad(this);
 	}

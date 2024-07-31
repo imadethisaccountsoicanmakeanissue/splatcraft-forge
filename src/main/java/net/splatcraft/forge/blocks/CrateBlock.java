@@ -65,7 +65,7 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
 
     public static List<ItemStack> generateLoot(Level level, CrateTileEntity crate, BlockState state, float luckValue)
     {
-        if (level == null || level.isClientSide)
+        if (level == null || level.isClientSide())
             return Collections.emptyList();
 
         BlockPos pos = crate.getBlockPos();

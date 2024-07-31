@@ -78,13 +78,14 @@ public class SuperJumpCommand
 
 	public static boolean superJumpToSpawn(ServerPlayer player, boolean global)
 	{
-		if(player.getRespawnDimension().equals(player.level.dimension()))
+        if (player.getRespawnDimension().equals(player.level().dimension()))
 		{
 			BlockPos targetPos = getSpawnPadPos(player);
-			if(targetPos == null)
-				targetPos = new BlockPos(player.level.getLevelData().getXSpawn(), player.level.getLevelData().getYSpawn(), player.level.getLevelData().getZSpawn());
+            if (targetPos == null) {
+                targetPos = new BlockPos(player.level().getLevelData().getXSpawn(), player.level().getLevelData().getYSpawn(), player.level().getLevelData().getZSpawn());
+            }
 
-			superJump(player, new Vec3(targetPos.getX(), targetPos.getY() + blockHeight(targetPos, player.level), targetPos.getZ()), global);
+            superJump(player, new Vec3(targetPos.getX(), targetPos.getY() + blockHeight(targetPos, player.level()), targetPos.getZ()), global);
 			return true;
 		}
 
@@ -95,14 +96,14 @@ public class SuperJumpCommand
 	public static BlockPos getSpawnPadPos(ServerPlayer player)
 	{
 		BlockPos targetPos = player.getRespawnPosition();
-		if(targetPos == null || player.level.getBlockEntity(targetPos) instanceof SpawnPadTileEntity spawnpad && !ColorUtils.colorEquals(player, spawnpad))
+        if (targetPos == null || player.level().getBlockEntity(targetPos) instanceof SpawnPadTileEntity spawnpad && !ColorUtils.colorEquals(player, spawnpad))
 			return null;
 		return targetPos;
 	}
 
 	public static boolean superJump(ServerPlayer player, Vec3 target)
 	{
-		return superJump(player, target, SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING));
+        return superJump(player, target, SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING));
 	}
 	public static boolean superJump(ServerPlayer player, Vec3 target, boolean global)
 	{
@@ -133,8 +134,8 @@ public class SuperJumpCommand
 
 	public static boolean canSuperJumpTo(Player player, Vec3 target)
 	{
-		int jumpLimit = SplatcraftGameRules.getIntRuleValue(player.level, SplatcraftGameRules.SUPERJUMP_DISTANCE_LIMIT);
-		return Stage.targetsOnSameStage(player.level, player.position(), target) || jumpLimit < 0 || player.position().distanceTo(target) <= jumpLimit;
+        int jumpLimit = SplatcraftGameRules.getIntRuleValue(player.level(), SplatcraftGameRules.SUPERJUMP_DISTANCE_LIMIT);
+        return Stage.targetsOnSameStage(player.level(), player.position(), target) || jumpLimit < 0 || player.position().distanceTo(target) <= jumpLimit;
 	}
 
 	public static double blockHeight(BlockPos block, Level level){
@@ -165,7 +166,7 @@ public class SuperJumpCommand
 			if(!PlayerCooldown.hasPlayerCooldown(event.getEntityLiving()))
 				return;
 
-			if(event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof Player player)
+            if (event.getEntityLiving().level.isClientSide() && event.getEntityLiving() instanceof Player player)
 				handleClient(player);
 		}
 
@@ -177,7 +178,7 @@ public class SuperJumpCommand
 
 			PlayerInfo info = PlayerInfoCapability.get(player);
 
-			if(info.getPlayerCooldown() instanceof SuperJump cooldown && player.level.isClientSide)
+            if (info.getPlayerCooldown() instanceof SuperJump cooldown && player.level().isClientSide())
 			{
 				player.setDeltaMovement(0,0,0);
 
@@ -186,9 +187,10 @@ public class SuperJumpCommand
 				if(!cooldown.isSquid() && info.isSquid())
 					ClientUtils.setSquid(info, false);
 
-				if(cooldown.source.distanceTo(cooldown.target) > MAX_DISTANCE_BEFORE_WARP)
-					player.setPos(progress < 0.5f ? cooldown.source.x : cooldown.target.x, getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, player.level.getMaxBuildHeight() + 100), progress < 0.5f ? cooldown.source.z : cooldown.target.z);
-				else player.setPos(Mth.lerp(progress, cooldown.source.x, cooldown.target.x), getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, cooldown.getHeight()), Mth.lerp(progress, cooldown.source.z, cooldown.target.z));
+                if (cooldown.source.distanceTo(cooldown.target) > MAX_DISTANCE_BEFORE_WARP) {
+                    player.setPos(progress < 0.5f ? cooldown.source.x : cooldown.target.x, getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, player.level().getMaxBuildHeight() + 100), progress < 0.5f ? cooldown.source.z : cooldown.target.z);
+                } else
+                    player.setPos(Mth.lerp(progress, cooldown.source.x, cooldown.target.x), getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, cooldown.getHeight()), Mth.lerp(progress, cooldown.source.z, cooldown.target.z));
 			}
 		}
 	}

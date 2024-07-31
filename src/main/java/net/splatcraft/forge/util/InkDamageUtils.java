@@ -3,7 +3,6 @@ package net.splatcraft.forge.util;
 import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;
@@ -107,7 +106,7 @@ public class InkDamageUtils {
                 InkOverlayInfo info = InkOverlayCapability.get(target);
 
                 info.setWoolColor(color);
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     SplatcraftPacketHandler.sendToTrackers(new UpdateInkOverlayPacket(target, info), target);
                 }
             }
@@ -127,7 +126,7 @@ public class InkDamageUtils {
                 if (info.getAmount() < target.getMaxHealth() * 1.5)
                     info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
                 info.setColor(color);
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     SplatcraftPacketHandler.sendToTrackersAndSelf(new UpdateInkOverlayPacket(target, info), target);
                 }
 

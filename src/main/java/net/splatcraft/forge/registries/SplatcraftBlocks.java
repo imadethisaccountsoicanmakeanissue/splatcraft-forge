@@ -68,7 +68,7 @@ public class SplatcraftBlocks
     public static final RegistryObject<Block> coraliteStairs = REGISTRY.register("coralite_stairs", () -> new InkStainedStairBlock.WithUninkedVariant(() -> coralite.get().defaultBlockState(), BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.BASEDRUM).mapColor(MapColor.CLAY).strength(3, 3).requiresCorrectToolForDrops()));
 
     public static final RegistryObject<Block> inkVat = REGISTRY.register("ink_vat", InkVatBlock::new);
-    public static final RegistryObject<Block> weaponWorkbench = REGISTRY.register("ammo_knights_workbench", () -> new WeaponWorkbenchBlock("ammo_knights_workbench"));
+    public static final RegistryObject<Block> weaponWorkbench = REGISTRY.register("ammo_knights_workbench", () -> new WeaponWorkbenchBlock());
     public static final RegistryObject<Block> remotePedestal = REGISTRY.register("remote_pedestal", RemotePedestalBlock::new);
 
     public static final RegistryObject<Block> emptyInkwell = REGISTRY.register("empty_inkwell", () -> new EmptyInkwellBlock(Block.Properties.of().instrument(NoteBlockInstrument.HAT).isRedstoneConductor((blockState, blockGetter, blockPos) -> false).strength(0.3F).sound(SoundType.GLASS)));

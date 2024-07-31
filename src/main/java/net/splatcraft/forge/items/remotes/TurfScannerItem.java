@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +40,7 @@ public class TurfScannerItem extends RemoteItem
         if (!level.isInWorldBounds(minPos) || !level.isInWorldBounds(maxPos))
             return new TurfScanResult(false, Component.translatable("status.scan_turf.out_of_world"));
 
-        if (level.isClientSide)
+        if (level.isClientSide())
         {
             return new TurfScanResult(true, null);
         }

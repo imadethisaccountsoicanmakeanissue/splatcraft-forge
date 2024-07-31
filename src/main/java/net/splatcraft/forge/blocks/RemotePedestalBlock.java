@@ -80,14 +80,14 @@ public class RemotePedestalBlock extends Block implements IColoredBlock, EntityB
             {
                 te.setItem(0, player.getItemInHand(hand).copy());
                 player.getItemInHand(hand).setCount(0);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
             else if(!te.isEmpty())
             {
                 ItemStack remote = te.removeItemNoUpdate(0);
                 if(!player.addItem(remote))
                     CommonUtils.spawnItem(level, pos.above(), remote);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
 

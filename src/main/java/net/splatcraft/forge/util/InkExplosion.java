@@ -2,6 +2,9 @@ package net.splatcraft.forge.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
@@ -19,10 +22,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 public class InkExplosion {
     private final Level level;
@@ -68,7 +67,7 @@ public class InkExplosion {
 
     public static void createInkExplosion(Level level, Entity source, BlockPos pos, float size, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon) {
 
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
 
         InkExplosion inksplosion = new InkExplosion(level, source, pos.getX(), pos.getY(), pos.getZ(), blockDamage, minDamage, maxDamage, damageMobs, size, color, type, weapon);

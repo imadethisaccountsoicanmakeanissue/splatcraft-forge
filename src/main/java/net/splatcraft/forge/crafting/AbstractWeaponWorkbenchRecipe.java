@@ -1,9 +1,9 @@
 package net.splatcraft.forge.crafting;
 
 import com.google.gson.JsonArray;
+import java.util.List;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -12,8 +12,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 
 public abstract class AbstractWeaponWorkbenchRecipe implements Recipe<Container>

@@ -3,7 +3,6 @@ package net.splatcraft.forge.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -127,7 +126,7 @@ public class PlayerCharge {
 
     public static void dischargeWeapon(Player player)
     {
-        if (!player.level.isClientSide || !hasCharge(player))
+        if (!player.level().isClientSide() || !hasCharge(player))
             return;
 
         PlayerCharge charge = getCharge(player);

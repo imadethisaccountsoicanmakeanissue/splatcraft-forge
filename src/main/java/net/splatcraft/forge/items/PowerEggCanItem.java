@@ -25,7 +25,7 @@ public class PowerEggCanItem extends Item
     {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         levelIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SplatcraftSounds.powerEggCanOpen, SoundSource.PLAYERS, 0.5F, 0.4F / (playerIn.getRandom().nextFloat() * 0.4F + 0.8F));
-        if (!levelIn.isClientSide)
+        if (!levelIn.isClientSide())
         {
             double d0 = playerIn.getEyeY() - (double) 0.3F;
             ItemEntity itementity = new ItemEntity(levelIn, playerIn.getX(), d0, playerIn.getZ(), new ItemStack(SplatcraftItems.powerEgg.get(), (levelIn.random.nextInt(4) + 1) * 10));
