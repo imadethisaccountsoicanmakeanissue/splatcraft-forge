@@ -130,7 +130,7 @@ public class StageSettingsScreen extends AbstractStagePadScreen
 	private void saveChanges()
 	{
 		if(!stage.getStageName().toString().equals(stageName.getValue()))
-			SplatcraftPacketHandler.sendToServer(new CreateOrEditStagePacket(stage.id, new TextComponent(stageName.getValue()), stage.cornerA, stage.cornerB, stage.dimID));
+			SplatcraftPacketHandler.sendToServer(new CreateOrEditStagePacket(stage.id, Component.literal(stageName.getValue()), stage.cornerA, stage.cornerB, stage.dimID));
 	}
 
 	@Override

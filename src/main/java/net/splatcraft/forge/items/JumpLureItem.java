@@ -46,7 +46,7 @@ public class JumpLureItem extends Item implements IColoredItem
 {
 	public JumpLureItem()
 	{
-		super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1));
+		super(new Properties().stacksTo(1));
 
 		SplatcraftItems.inkColoredItems.add(this);
 	}
@@ -86,13 +86,13 @@ public class JumpLureItem extends Item implements IColoredItem
                 target = new Vec3(spawnPos.getX(), spawnPos.getY() + SuperJumpCommand.blockHeight(spawnPos, player.level()), spawnPos.getZ());
                 if (!SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING) && !SuperJumpCommand.canSuperJumpTo(player, target))
 				{
-					player.sendMessage(new TextComponent("Spawn Pad outside of stage bounds!"), player.getUUID()); //TODO better feedback
+					player.sendMessage(Component.literal("Spawn Pad outside of stage bounds!"), player.getUUID()); //TODO better feedback
 					return;
 				}
 			}
 			else
 			{
-				player.sendMessage(new TextComponent("No valid Spawn Pad was found!"), player.getUUID()); //TODO better feedback
+				player.sendMessage(Component.literal("No valid Spawn Pad was found!"), player.getUUID()); //TODO better feedback
 				return;
 			}
 		}
@@ -103,7 +103,7 @@ public class JumpLureItem extends Item implements IColoredItem
             if (targetPlayer == null || !hasMatchingLure(targetPlayer, color) || (!SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING)
 					&& !SuperJumpCommand.canSuperJumpTo(player, targetPlayer.position())))
 			{
-				player.sendMessage(new TextComponent("A communication error has occurred."), player.getUUID()); //TODO better feedback
+				player.sendMessage(Component.literal("A communication error has occurred."), player.getUUID()); //TODO better feedback
 				return;
 			}
 			else target = targetPlayer.position();

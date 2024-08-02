@@ -77,7 +77,7 @@ public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings
 
     public void serializeToBuffer(FriendlyByteBuf buffer)
     {
-        buffer.writeWithCodec(getCodec(), serialize());
+        buffer.writeJsonWithCodec(getCodec(), serialize());
     }
 
     public static float calculateDistanceTravelled(float hAccel, float gravity, float vHeight)

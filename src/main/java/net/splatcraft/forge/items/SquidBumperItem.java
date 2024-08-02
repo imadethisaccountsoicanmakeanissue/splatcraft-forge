@@ -43,7 +43,7 @@ public class SquidBumperItem extends Item implements IColoredItem
 {
     public SquidBumperItem()
     {
-        super(new Properties().stacksTo(16).tab(SplatcraftItemGroups.GROUP_GENERAL));
+        super(new Properties().stacksTo(16));
         SplatcraftItems.inkColoredItems.add(this);
     }
 
@@ -59,15 +59,6 @@ public class SquidBumperItem extends Item implements IColoredItem
         else tooltip.add(Component.translatable( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
     }
 
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items)
-    {
-        if (allowdedIn(group))
-        {
-            items.add(ColorUtils.setColorLocked(new ItemStack(this), false));
-            items.add(ColorUtils.setInverted(ColorUtils.setColorLocked(new ItemStack(this), false), true));
-        }
-    }
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected)
@@ -121,7 +112,7 @@ public class SquidBumperItem extends Item implements IColoredItem
         {
             if (level instanceof ServerLevel)
             {
-                SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.get().create((ServerLevel) level, stack.getTag(), null, context.getPlayer(), pos, MobSpawnType.SPAWN_EGG, true, true);
+                SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.get().create((ServerLevel) level, stack.getTag(), null, pos, MobSpawnType.SPAWN_EGG, true, true);
                 if(bumper != null)
                 {
                     bumper.setColor(ColorUtils.getInkColorOrInverted(stack));

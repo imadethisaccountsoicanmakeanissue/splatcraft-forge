@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +21,7 @@ public class FilterItem extends Item
 
     public FilterItem(Rarity rarity, boolean isGlowing, boolean isOmni)
     {
-        super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1).rarity(rarity));
+        super(new Properties().stacksTo(1).rarity(rarity));
 
         this.isGlowing = isGlowing;
         this.isOmni = isOmni;

@@ -430,7 +430,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
     }
 
     protected static Component getDisplayName(ItemStack stack) {
-        MutableComponent iformattabletextcomponent = (new TextComponent("")).append(stack.getHoverName());
+        MutableComponent iformattabletextcomponent = (Component.literal("")).append(stack.getHoverName());
         if (stack.hasCustomHoverName())
             iformattabletextcomponent.withStyle(ChatFormatting.ITALIC);
 

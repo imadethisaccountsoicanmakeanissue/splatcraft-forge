@@ -204,7 +204,7 @@ public class Stage implements Comparable<Stage> {
 
 
 
-		name = nbt.contains("Name") ? Component.Serializer.fromJson(nbt.getString("Name")) : new TextComponent(id);
+		name = nbt.contains("Name") ? Component.Serializer.fromJson(nbt.getString("Name")) : Component.literal(id);
 
 	}
 

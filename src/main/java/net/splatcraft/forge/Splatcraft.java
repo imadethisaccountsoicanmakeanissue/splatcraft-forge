@@ -58,7 +58,7 @@ public class Splatcraft {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
-        //addBuiltinPack("classic_weapons", new TextComponent("Splatcraft - Classic Weapons"));
+        //addBuiltinPack("classic_weapons", Component.literal("Splatcraft - Classic Weapons"));
 
     }
 

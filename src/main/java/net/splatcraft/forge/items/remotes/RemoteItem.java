@@ -15,6 +15,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -129,7 +130,7 @@ public abstract class RemoteItem extends Item implements CommandSource
     {
         CompoundTag nbt = stack.getOrCreateTag();
 
-        Level result = level.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, nbt.contains("Stage") ?
+        Level result = level.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, nbt.contains("Stage") ?
                 (level.isClientSide() ? ClientUtils.clientStages.get(nbt.getString("Stage")) : SaveInfoCapability.get(level.getServer()).getStages().get(nbt.getString("Stage"))).dimID
                 : new ResourceLocation(nbt.getString("Dimension"))));
 
@@ -174,7 +175,7 @@ public abstract class RemoteItem extends Item implements CommandSource
         else tooltip.add(Component.translatable("item.remote.coords.invalid").withStyle(Style.EMPTY.withColor(ChatFormatting.RED).withItalic(true)));
 
         if(nbt.contains("Targets") && !nbt.getString("Targets").isEmpty())
-            tooltip.add(ComponentUtils.mergeStyles(new TextComponent(nbt.getString("Targets")), TARGETS_STYLE));
+            tooltip.add(ComponentUtils.mergeStyles(Component.literal(nbt.getString("Targets")), TARGETS_STYLE));
     }
 
     protected static final Style TARGETS_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_BLUE).withItalic(true);
@@ -246,7 +247,7 @@ public abstract class RemoteItem extends Item implements CommandSource
             try {
                 targets = EntityArgument.players().parse(new StringReader(stack.getTag().getString("Targets"))).findPlayers(createCommandSourceStack(stack, (ServerLevel) usedOnWorld, pos, user));
             } catch (CommandSyntaxException e) {
-                return new RemoteResult(false, new TextComponent(e.getMessage()));
+                return new RemoteResult(false, Component.literal(e.getMessage()));
             }
 
         return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack), targets);
@@ -258,7 +259,7 @@ public abstract class RemoteItem extends Item implements CommandSource
     }
 
     @Override
-    public void sendMessage(Component p_145747_1_, UUID p_145747_2_) {
+    public void sendSystemMessage(Component p_145747_1_) {
 
     }
 

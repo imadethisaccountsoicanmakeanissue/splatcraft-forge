@@ -3,6 +3,7 @@ package net.splatcraft.forge.client.gui.stagepad;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -55,14 +56,14 @@ public class StageActionsScreen extends AbstractStagePadScreen
 	}
 
 	@Override
-	public void handleWidgets(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	public void handleWidgets(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 
 	}
 
 	@Override
-	public void renderBackground(PoseStack poseStack)
+	public void renderBackground(GuiGraphics graphics)
 	{
-		super.renderBackground(poseStack);
+		super.renderBackground(graphics);
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.setShaderTexture(0, TEXTURES);
@@ -70,7 +71,9 @@ public class StageActionsScreen extends AbstractStagePadScreen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 
-		blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
+        graphics.blitNineSliced();
+
+		graphics.blit(TEXTURES, x, y, 0, 0, imageWidth, imageHeight);
 
 	}
 }

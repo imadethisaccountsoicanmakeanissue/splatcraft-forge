@@ -78,7 +78,7 @@ public class SaveInfo
     }
 
     public boolean createStage(Level level, String stageId, BlockPos corner1, BlockPos corner2) {
-        return createStage(level, stageId, corner1, corner2, new TextComponent(stageId));
+        return createStage(level, stageId, corner1, corner2, Component.literal(stageId));
     }
 
     public CompoundTag writeNBT(CompoundTag nbt)

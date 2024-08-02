@@ -293,7 +293,7 @@ public class StageCommand
 				}
 
 		stage.setTeamColor(teamId, teamColor);
-		source.sendSuccess(Component.translatable("commands.stage.teams.set.success", affectedBlocks, stageId, new TextComponent(teamId).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(teamColor)))), true);
+		source.sendSuccess(Component.translatable("commands.stage.teams.set.success", affectedBlocks, stageId, Component.literal(teamId).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(teamColor)))), true);
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 
@@ -356,7 +356,7 @@ public class StageCommand
 
 		stage.removeTeam(teamId);
 
-		source.sendSuccess(Component.translatable("commands.stage.teams.remove.success", new TextComponent(teamId).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(teamColor))), stageId, affectedBlocks), true);
+		source.sendSuccess(Component.translatable("commands.stage.teams.remove.success", Component.literal(teamId).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(teamColor))), stageId, affectedBlocks), true);
 		return teamColor;
 	}
 

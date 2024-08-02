@@ -44,7 +44,7 @@ public class SquidBumperRenderer extends LivingEntityRenderer<SquidBumperEntity,
 		} else
 		{
 			float health = 20 - entityIn.getInkHealth();
-			super.renderNameTag(entityIn, new TextComponent((health >= 20 ? ChatFormatting.DARK_RED : "") + String.format("%.1f", health)), PoseStackIn, bufferIn, packedLightIn);
+			super.renderNameTag(entityIn, Component.literal((health >= 20 ? ChatFormatting.DARK_RED : "") + String.format("%.1f", health)), PoseStackIn, bufferIn, packedLightIn);
 
 		}
 	}

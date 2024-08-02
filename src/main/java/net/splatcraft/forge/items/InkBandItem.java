@@ -7,14 +7,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import org.jetbrains.annotations.Nullable;
 
 public class InkBandItem extends Item
 {
 	public InkBandItem()
 	{
-		super(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	@Override

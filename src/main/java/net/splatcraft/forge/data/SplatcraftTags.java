@@ -1,6 +1,6 @@
 package net.splatcraft.forge.data;
 
-import net.minecraft.core.Registry;
+import java.util.HashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -8,12 +8,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.util.InkColor;
-
-import java.util.HashMap;
 
 public class SplatcraftTags
 {
@@ -21,7 +18,6 @@ public class SplatcraftTags
     {
         new Items();
         new Blocks();
-        new InkColors();
         new EntityTypes();
     }
 
@@ -96,22 +92,8 @@ public class SplatcraftTags
 
         private static TagKey<EntityType<?>> createTag(String name)
         {
-            return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(Splatcraft.MODID, name));
+            return TagKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), new ResourceLocation(Splatcraft.MODID, name));
         }
-    }
-
-
-    public static class InkColors
-    {
-        public static ITag<InkColor> STARTER_COLORS = createTag("starter_colors");
-
-        private static ITag<InkColor> createTag(String name)
-        {
-            return null;
-            //return ForgeTagHandler.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, "ink_colors"), new ResourceLocation(Splatcraft.MODID, name)); TODO
-        }
-
-
     }
 
 

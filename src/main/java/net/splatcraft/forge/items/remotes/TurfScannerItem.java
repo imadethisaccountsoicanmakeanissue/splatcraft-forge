@@ -28,7 +28,7 @@ public class TurfScannerItem extends RemoteItem
 {
     public TurfScannerItem()
     {
-        super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1), 2);
+        super(new Properties().stacksTo(1), 2);
     }
 
     public static TurfScanResult scanTurf(Level level, Level outputWorld, BlockPos blockpos, BlockPos blockpos1, int mode, Collection<ServerPlayer> targets)

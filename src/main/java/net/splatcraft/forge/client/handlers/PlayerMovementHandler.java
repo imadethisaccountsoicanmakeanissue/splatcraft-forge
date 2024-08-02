@@ -1,5 +1,6 @@
 package net.splatcraft.forge.client.handlers;
 
+import java.util.UUID;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.effect.MobEffects;
@@ -22,8 +23,6 @@ import net.splatcraft.forge.registries.SplatcraftAttributes;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
-
-import java.util.UUID;
 
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
@@ -79,7 +78,7 @@ public class PlayerMovementHandler
 
         if (PlayerInfoCapability.isSquid(player))
         {
-            if (InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(INK_SWIM_SPEED) && player.isOnGround())
+            if (InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(INK_SWIM_SPEED) && player.onGround())
                 speedAttribute.addTransientModifier(INK_SWIM_SPEED);
             if (!swimAttribute.hasModifier(SQUID_SWIM_SPEED))
                 swimAttribute.addTransientModifier(SQUID_SWIM_SPEED);
@@ -94,7 +93,7 @@ public class PlayerMovementHandler
         if (!player.getAbilities().flying)
         {
             if (speedAttribute.hasModifier(INK_SWIM_SPEED))
-                player.moveRelative((float) player.getAttributeValue(SplatcraftAttributes.inkSwimSpeed.get()) * (player.isOnGround() ? 1 : 0.75f), new Vec3(player.xxa, 0.0f, player.zza).normalize());
+                player.moveRelative((float) player.getAttributeValue(SplatcraftAttributes.inkSwimSpeed.get()) * (player.onGround() ? 1 : 0.75f), new Vec3(player.xxa, 0.0f, player.zza).normalize());
 
         }
     }
@@ -104,7 +103,7 @@ public class PlayerMovementHandler
     {
 
         Input input = event.getInput();
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
 
         float speedMod = !input.shiftKeyDown ? PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidHide(player) ? 30f : 2f : 1f;
 

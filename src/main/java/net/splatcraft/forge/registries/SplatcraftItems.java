@@ -9,9 +9,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -19,12 +17,11 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.MissingMappingsEvent;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
@@ -33,12 +30,31 @@ import net.splatcraft.forge.client.models.inktanks.InkTankJrModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankModel;
 import net.splatcraft.forge.dispenser.PlaceBlockDispenseBehavior;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
-import net.splatcraft.forge.items.*;
+import net.splatcraft.forge.items.BlockItem;
+import net.splatcraft.forge.items.BlueprintItem;
+import net.splatcraft.forge.items.ColoredArmorItem;
+import net.splatcraft.forge.items.ColoredBlockItem;
+import net.splatcraft.forge.items.FilterItem;
+import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.items.InkWaxerItem;
+import net.splatcraft.forge.items.JumpLureItem;
+import net.splatcraft.forge.items.PowerEggCanItem;
+import net.splatcraft.forge.items.SquidBumperItem;
+import net.splatcraft.forge.items.StagePadItem;
 import net.splatcraft.forge.items.remotes.ColorChangerItem;
 import net.splatcraft.forge.items.remotes.InkDisruptorItem;
 import net.splatcraft.forge.items.remotes.RemoteItem;
 import net.splatcraft.forge.items.remotes.TurfScannerItem;
-import net.splatcraft.forge.items.weapons.*;
+import net.splatcraft.forge.items.weapons.BlasterItem;
+import net.splatcraft.forge.items.weapons.ChargerItem;
+import net.splatcraft.forge.items.weapons.CurlingSubWeaponItem;
+import net.splatcraft.forge.items.weapons.DualieItem;
+import net.splatcraft.forge.items.weapons.RollerItem;
+import net.splatcraft.forge.items.weapons.ShooterItem;
+import net.splatcraft.forge.items.weapons.SlosherItem;
+import net.splatcraft.forge.items.weapons.SplatlingItem;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 
@@ -49,7 +65,7 @@ import static net.splatcraft.forge.Splatcraft.MODID;
 public class SplatcraftItems {
     protected static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-    public static final List<Item> weapons = new ArrayList<>();
+    public static final List<WeaponBaseItem> weapons = new ArrayList<>();
     public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
     public static final UUID SPEED_MOD_UUID = UUID.fromString("dc65cedb-19d2-4731-a492-ee930c8234df");
 
@@ -147,27 +163,27 @@ public class SplatcraftItems {
     public static final RegistryObject<SubWeaponItem> curlingBomb = REGISTRY.register("curling_bomb", () -> new CurlingSubWeaponItem(SplatcraftEntities.CURLING_BOMB, "curling_bomb", CurlingBombEntity::onItemUseTick));
 
     //Vanity
-    public static final RegistryObject<Item> inkClothHelmet = REGISTRY.register("ink_cloth_helmet", () -> new ColoredArmorItem(INK_CLOTH, EquipmentSlot.HEAD));
-    public static final RegistryObject<Item> inkClothChestplate = REGISTRY.register("ink_cloth_chestplate", () -> new ColoredArmorItem(INK_CLOTH, EquipmentSlot.CHEST));
-    public static final RegistryObject<Item> inkClothLeggings = REGISTRY.register("ink_cloth_leggings", () -> new ColoredArmorItem(INK_CLOTH, EquipmentSlot.LEGS));
-    public static final RegistryObject<Item> inkClothBoots = REGISTRY.register("ink_cloth_boots", () -> new ColoredArmorItem(INK_CLOTH, EquipmentSlot.FEET));
+    public static final RegistryObject<Item> inkClothHelmet = REGISTRY.register("ink_cloth_helmet", () -> new ColoredArmorItem(INK_CLOTH, ArmorItem.Type.HELMET));
+    public static final RegistryObject<Item> inkClothChestplate = REGISTRY.register("ink_cloth_chestplate", () -> new ColoredArmorItem(INK_CLOTH, ArmorItem.Type.CHESTPLATE));
+    public static final RegistryObject<Item> inkClothLeggings = REGISTRY.register("ink_cloth_leggings", () -> new ColoredArmorItem(INK_CLOTH, ArmorItem.Type.LEGGINGS));
+    public static final RegistryObject<Item> inkClothBoots = REGISTRY.register("ink_cloth_boots", () -> new ColoredArmorItem(INK_CLOTH, ArmorItem.Type.BOOTS));
 
     //Materials
-    public static final RegistryObject<Item> sardinium = REGISTRY.register("sardinium", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL)));
+    public static final RegistryObject<Item> sardinium = REGISTRY.register("sardinium", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> sardiniumBlock = REGISTRY.register("sardinium_block", () -> new BlockItem(SplatcraftBlocks.sardiniumBlock.get()));
-    public static final RegistryObject<Item> rawSardinium = REGISTRY.register("raw_sardinium", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL)));
+    public static final RegistryObject<Item> rawSardinium = REGISTRY.register("raw_sardinium", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> sardiniumOre = REGISTRY.register("sardinium_ore", () -> new BlockItem(SplatcraftBlocks.sardiniumOre.get()));
     public static final RegistryObject<Item> rawSardiniumBlock = REGISTRY.register("raw_sardinium_block", () -> new BlockItem(SplatcraftBlocks.rawSardiniumBlock.get()));
     public static final RegistryObject<Item> coralite = REGISTRY.register("coralite", () -> new ColoredBlockItem(SplatcraftBlocks.coralite.get()).setMatchColor(false).clearsToSelf());
     public static final RegistryObject<Item> coraliteSlab = REGISTRY.register("coralite_slab", () -> new ColoredBlockItem(SplatcraftBlocks.coraliteSlab.get()).setMatchColor(false).clearsToSelf());
     public static final RegistryObject<Item> coraliteStairs = REGISTRY.register("coralite_stairs", () -> new ColoredBlockItem(SplatcraftBlocks.coraliteStairs.get()).setMatchColor(false).clearsToSelf());
-    public static final RegistryObject<Item> powerEgg = REGISTRY.register("power_egg", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL)));
+    public static final RegistryObject<Item> powerEgg = REGISTRY.register("power_egg", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> powerEggCan = REGISTRY.register("power_egg_can", PowerEggCanItem::new);
     public static final RegistryObject<Item> powerEggBlock = REGISTRY.register("power_egg_block", () -> new BlockItem(SplatcraftBlocks.powerEggBlock.get()));
     public static final RegistryObject<Item> emptyInkwell = REGISTRY.register("empty_inkwell", () -> new BlockItem(SplatcraftBlocks.emptyInkwell.get()));
-    public static final RegistryObject<Item> ammoKnightsScrap = REGISTRY.register("ammo_knights_scrap", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL)));
+    public static final RegistryObject<Item> ammoKnightsScrap = REGISTRY.register("ammo_knights_scrap", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> blueprint = REGISTRY.register("blueprint", BlueprintItem::new);
-    public static final RegistryObject<Item> kensaPin = REGISTRY.register("toni_kensa_pin", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> kensaPin = REGISTRY.register("toni_kensa_pin", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
 
     //Remotes
     public static final RegistryObject<RemoteItem> turfScanner = REGISTRY.register("turf_scanner", TurfScannerItem::new);
@@ -208,10 +224,10 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> splatSwitch = REGISTRY.register("splat_switch", () -> new BlockItem(SplatcraftBlocks.splatSwitch.get()));
 
     //Ink Stained Blocks
-    public static final RegistryObject<Item> inkedWool = REGISTRY.register("ink_stained_wool", () -> new ColoredBlockItem(SplatcraftBlocks.inkedWool.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.WHITE_WOOL));
-    public static final RegistryObject<Item> inkedCarpet = REGISTRY.register("ink_stained_carpet", () -> new ColoredBlockItem(SplatcraftBlocks.inkedCarpet.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.WHITE_CARPET));
-    public static final RegistryObject<Item> inkedGlass = REGISTRY.register("ink_stained_glass", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlass.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.GLASS));
-    public static final RegistryObject<Item> inkedGlassPane = REGISTRY.register("ink_stained_glass_pane", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.GLASS_PANE));
+    public static final RegistryObject<Item> inkedWool = REGISTRY.register("ink_stained_wool", () -> new ColoredBlockItem(SplatcraftBlocks.inkedWool.get(), new Item.Properties(), Items.WHITE_WOOL));
+    public static final RegistryObject<Item> inkedCarpet = REGISTRY.register("ink_stained_carpet", () -> new ColoredBlockItem(SplatcraftBlocks.inkedCarpet.get(), new Item.Properties(), Items.WHITE_CARPET));
+    public static final RegistryObject<Item> inkedGlass = REGISTRY.register("ink_stained_glass", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlass.get(), new Item.Properties(), Items.GLASS));
+    public static final RegistryObject<Item> inkedGlassPane = REGISTRY.register("ink_stained_glass_pane", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane.get(), new Item.Properties(), Items.GLASS_PANE));
 
     //Barriers
     public static final RegistryObject<Item> allowedColorBarrier = REGISTRY.register("allowed_color_barrier", () -> new ColoredBlockItem(SplatcraftBlocks.allowedColorBarrier.get()));
@@ -220,8 +236,8 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> stageVoid = REGISTRY.register("stage_void", () -> new BlockItem(SplatcraftBlocks.stageVoid.get()));
 
     //Gear
-    public static final RegistryObject<Item> splatfestBand = REGISTRY.register("splatfest_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
-    public static final RegistryObject<Item> clearBand = REGISTRY.register("clear_ink_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
+    public static final RegistryObject<Item> splatfestBand = REGISTRY.register("splatfest_band", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> clearBand = REGISTRY.register("clear_ink_band", () -> new Item(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> waxApplicator = REGISTRY.register("wax_applicator", InkWaxerItem::new);
     public static final RegistryObject<Item> superJumpLure = REGISTRY.register("super_jump_lure", JumpLureItem::new);
@@ -368,13 +384,16 @@ public class SplatcraftItems {
             put("ink_polisher", waxApplicator);
         }};
 
+
         @SubscribeEvent
-        public static void onMissingMappings(final RegistryEvent.MissingMappings<Item> event) {
-            for (RegistryEvent.MissingMappings.Mapping<Item> item : event.getMappings(Splatcraft.MODID)) {
-                String key = item.key.getPath();
-                if (remaps.containsKey(key))
-                    item.remap(remaps.get(key).get());
-            }
+        public static void onMissingMappings(final MissingMappingsEvent event)
+        {
+            if(event.getKey().equals(ForgeRegistries.Keys.ITEMS))
+                for (MissingMappingsEvent.Mapping<Item> item : event.getMappings(ForgeRegistries.Keys.ITEMS, Splatcraft.MODID)) {
+                    String key = item.getKey().getPath();
+                    if (remaps.containsKey(key))
+                        item.remap(remaps.get(key).get());
+                }
         }
     }
 }

@@ -78,12 +78,12 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
     public ColoredBlockItem(Block block, int stackSize, @Nullable Item clearItem)
     {
-        this(block, new Properties().stacksTo(stackSize).tab(SplatcraftItemGroups.GROUP_GENERAL), clearItem);
+        this(block, new Properties().stacksTo(stackSize), clearItem);
     }
 
     public ColoredBlockItem(Block block, int stackSize)
     {
-        this(block, new Properties().stacksTo(stackSize).tab(SplatcraftItemGroups.GROUP_GENERAL), null);
+        this(block, new Properties().stacksTo(stackSize), null);
     }
 
     public ColoredBlockItem setMatchColor(boolean matchColor) {

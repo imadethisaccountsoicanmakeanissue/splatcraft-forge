@@ -123,8 +123,7 @@ public class InkVatTileEntity extends BaseContainerBlockEntity implements Worldl
     public void updateRecipeOutput()
     {
         if (hasRecipe()) {
-            setItem(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell.get(), Math.min(SplatcraftItems.inkwell.get().getMaxStackSize(),
-                    Math.min(Math.min(inventory.get(0).getCount(), inventory.get(1).getCount()), inventory.get(2).getCount()))), getColor()), true));
+            setItem(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(SplatcraftItems.inkwell.get().getDefaultInstance(), getColor()), true));
         } else setItem(4, ItemStack.EMPTY);
     }
 

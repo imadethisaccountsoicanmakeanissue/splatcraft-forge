@@ -9,7 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,7 +27,6 @@ import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.tileentities.IHasTeam;
 import net.splatcraft.forge.util.ClientUtils;
@@ -40,7 +38,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
 {
     public ColorChangerItem()
     {
-        super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1).rarity(Rarity.UNCOMMON), 3);
+        super(new Properties().stacksTo(1).rarity(Rarity.UNCOMMON), 3);
         SplatcraftItems.inkColoredItems.add(this);
     }
 
@@ -90,7 +88,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
 
             if(nbt.contains("Stage") && ClientUtils.clientStages.containsKey(nbt.getString("Stage")))
                 color = ClientUtils.clientStages.get(nbt.getString("Stage")).getTeamColor(nbt.getString("Team"));
-            tooltip.add(ComponentUtils.mergeStyles(new TextComponent(nbt.getString("Team")), color <= -1 ? TARGETS_STYLE : TARGETS_STYLE.withColor(TextColor.fromRgb(color))));
+            tooltip.add(ComponentUtils.mergeStyles(Component.literal(nbt.getString("Team")), color <= -1 ? TARGETS_STYLE : TARGETS_STYLE.withColor(TextColor.fromRgb(color))));
         }
 
 

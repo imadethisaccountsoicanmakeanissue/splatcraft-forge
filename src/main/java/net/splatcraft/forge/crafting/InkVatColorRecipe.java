@@ -17,7 +17,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 

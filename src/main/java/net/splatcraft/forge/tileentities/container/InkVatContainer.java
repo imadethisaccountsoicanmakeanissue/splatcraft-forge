@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.splatcraft.forge.blocks.InkVatBlock;
 import net.splatcraft.forge.crafting.InkVatColorRecipe;
@@ -22,7 +23,6 @@ import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
@@ -39,9 +39,9 @@ public class InkVatContainer extends AbstractContainerMenu {
         this.te = te;
         this.access = ContainerLevelAccess.create(te.getLevel(), te.getBlockPos());
 
-        addSlot(new SlotInput(new ItemStack(Items.INK_SAC), te, 0, 26, 70));
-        addSlot(new SlotInput(new ItemStack(SplatcraftItems.powerEgg.get()), te, 1, 46, 70));
-        addSlot(new SlotInput(new ItemStack(SplatcraftBlocks.emptyInkwell.get()), te, 2, 92, 82));
+        addSlot(new SlotInput(Ingredient.of(Items.INK_SAC), te, 0, 26, 70));
+        addSlot(new SlotInput(Ingredient.of(SplatcraftItems.powerEgg.get()), te, 1, 46, 70));
+        addSlot(new SlotInput(Ingredient.of(SplatcraftBlocks.emptyInkwell.get()), te, 2, 92, 82));
         addSlot(new SlotFilter(te, 3, 36, 89));
         addSlot(new SlotOutput(playerInv.player, te, 4, 112, 82));
 
@@ -103,38 +103,18 @@ public class InkVatContainer extends AbstractContainerMenu {
     public static List<Integer> getAvailableRecipes(InkVatTileEntity te)
     {
         List<Integer> recipes = Lists.newArrayList();
-        if (te.hasOmniFilter())
+
+        for (InkVatColorRecipe recipe : te.getLevel().getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE, te, te.getLevel()))
         {
-            recipes = getOmniList();
-        } else
-        {
-            for (InkVatColorRecipe recipe : te.getLevel().getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE, te, te.getLevel()))
+            if (recipe.matches(te, te.getLevel()))
             {
-                if (recipe.matches(te, te.getLevel()))
-                {
-                    recipes.add(recipe.getOutputColor());
-                }
+                recipes.add(recipe.getOutputColor());
             }
         }
+
 
         return recipes;
     }
-
-    public static List<Integer> getOmniList()
-    {
-        List<Integer> list = Lists.newArrayList();
-        list.addAll(InkVatColorRecipe.getOmniList());
-
-        for (InkColor color : SplatcraftInkColors.REGISTRY.get()) {
-            int c = color.getColor();
-            if (!list.contains(c)) {
-                list.add(c);
-            }
-        }
-
-        return list;
-    }
-
 
     @Override
     public boolean clickMenuButton(Player playerIn, int id)
@@ -264,9 +244,9 @@ public class InkVatContainer extends AbstractContainerMenu {
 
     static class SlotInput extends Slot
     {
-        final ItemStack validItem;
+        final Ingredient validItem;
 
-        public SlotInput(ItemStack validItem, Container inventoryIn, int index, int xPosition, int yPosition)
+        public SlotInput(Ingredient validItem, Container inventoryIn, int index, int xPosition, int yPosition)
         {
             super(inventoryIn, index, xPosition, yPosition);
             this.validItem = validItem;
@@ -275,7 +255,7 @@ public class InkVatContainer extends AbstractContainerMenu {
         @Override
         public boolean mayPlace(ItemStack stack)
         {
-            return validItem.sameItemStackIgnoreDurability(stack);
+            return validItem.test(stack);
         }
     }
 

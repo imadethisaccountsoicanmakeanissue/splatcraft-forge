@@ -3,26 +3,21 @@ package net.splatcraft.forge.client.gui;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.spectator.SpectatorMenuItem;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.splatcraft.forge.client.handlers.JumpLureHudHandler;
 import net.splatcraft.forge.registries.SplatcraftItems;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
-
-public class SuperJumpSelectorScreen extends GuiComponent
+public class SuperJumpSelectorScreen
 {
 
 
@@ -32,7 +27,7 @@ public class SuperJumpSelectorScreen extends GuiComponent
 
 	private static final Minecraft mc = Minecraft.getInstance();
 
-	public void render(PoseStack stack, float partialTicks, JumpLureHudHandler.SuperJumpTargets targets, double scrollDelta)
+	public void render(GuiGraphics graphics, float partialTicks, JumpLureHudHandler.SuperJumpTargets targets, double scrollDelta)
 	{
 
 		ArrayList<UUID> playerUuids = new ArrayList<>(targets.playerTargetUuids);
@@ -42,25 +37,25 @@ public class SuperJumpSelectorScreen extends GuiComponent
 		ArrayList<MenuItem> options = new ArrayList<>(playerUuids.stream().map(uuid -> new PlayerMenuItem(mc.getConnection().getPlayerInfo(uuid).getProfile())).toList());
 
 		if(targets.canTargetSpawn)
-			options.add(0, new ItemStackMenuItem(new ItemStack(SplatcraftItems.spawnPad.get()), new TextComponent("Go to Spawn")));
-		options.add(0, new ItemStackMenuItem(new ItemStack(Items.BARRIER), new TextComponent("Cancel")));
+			options.add(0, new ItemStackMenuItem(new ItemStack(SplatcraftItems.spawnPad.get()), Component.literal("Go to Spawn")));
+		options.add(0, new ItemStackMenuItem(new ItemStack(Items.BARRIER), Component.literal("Cancel")));
 
 		int screenWidth = mc.getWindow().getGuiScaledWidth();
 		int screenHeight = mc.getWindow().getGuiScaledHeight();
 
 		for(int i = -Math.min(entryCount / 2, 4); i <= Math.min(entryCount / 2, 4); i++)
 		{
-			options.get(Math.floorMod((i + index), entryCount)).renderIcon(stack, screenWidth / 2 - 10 + i * 20, 10, partialTicks, 1);
+			options.get(Math.floorMod((i + index), entryCount)).renderIcon(graphics, screenWidth / 2 - 10 + i * 20, 10, partialTicks, 1);
 		}
 
-		drawCenteredString(stack, mc.font, options.get(index).getName(), screenWidth / 2, 32, 0xFFFFFF);
+        graphics.drawCenteredString(mc.font, options.get(index).getName(), screenWidth / 2, 32, 0xFFFFFF);
 
 	}
 
 	interface MenuItem
 	{
 		Component getName();
-		void renderIcon(PoseStack poseStack, int x, int y, float partialTicks, float alpha);
+		void renderIcon(GuiGraphics graphics, int x, int y, float partialTicks, float alpha);
 	}
 
 	static class ItemStackMenuItem implements MenuItem
@@ -80,10 +75,10 @@ public class SuperJumpSelectorScreen extends GuiComponent
 		}
 
 		@Override
-		public void renderIcon(PoseStack poseStack, int x, int y, float partialTicks, float alpha)
+		public void renderIcon(GuiGraphics graphics, int x, int y, float partialTicks, float alpha)
 		{
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-			mc.getItemRenderer().renderGuiItem(this.stack, x, y);
+			graphics.renderItem(this.stack, x, y);
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1);
 		}
 	}
@@ -101,10 +96,10 @@ public class SuperJumpSelectorScreen extends GuiComponent
 			if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
 				this.location = minecraft.getSkinManager().registerTexture(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
 			} else {
-				this.location = DefaultPlayerSkin.getDefaultSkin(Player.createPlayerUUID(profile));
+				this.location = DefaultPlayerSkin.getDefaultSkin(UUIDUtil.getOrCreatePlayerUUID(profile));
 			}
 
-			this.name = new TextComponent(profile.getName());
+			this.name = Component.literal(profile.getName());
 		}
 
 		@Override
@@ -113,12 +108,11 @@ public class SuperJumpSelectorScreen extends GuiComponent
 		}
 
 		@Override
-		public void renderIcon(PoseStack poseStack, int x, int y, float partialTicks, float alpha)
+		public void renderIcon(GuiGraphics graphics, int x, int y, float partialTicks, float alpha)
 		{
-			RenderSystem.setShaderTexture(0, this.location);
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-			GuiComponent.blit(poseStack, x, y, 16, 16, 8.0F, 8.0F, 8, 8, 64, 64);
-			GuiComponent.blit(poseStack, x, y, 16, 16, 40.0F, 8.0F, 8, 8, 64, 64);
+            graphics.blit(location, x, y, 16, 16, 8.0F, 8.0F, 8, 8, 64, 64);
+            graphics.blit(location, x, y, 16, 16, 40.0F, 8.0F, 8, 8, 64, 64);
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 		}
 	}

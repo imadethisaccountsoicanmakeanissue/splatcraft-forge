@@ -1,12 +1,15 @@
 package net.splatcraft.forge.client.handlers;
 
+import java.util.ArrayList;
+import java.util.UUID;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,9 +18,6 @@ import net.splatcraft.forge.items.JumpLureItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.UseJumpLurePacket;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -29,21 +29,20 @@ public class JumpLureHudHandler
 
 	private static final SuperJumpSelectorScreen selectorGui = new SuperJumpSelectorScreen();
 
-	@SubscribeEvent
-	public static void renderGui(RenderGameOverlayEvent.Pre event)
+	public static void renderGui(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight)
 	{
 		LocalPlayer player = Minecraft.getInstance().player;
 
-		if(!event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER) || player == null ||
+		if(player == null ||
 		!(player.getUseItem().getItem() instanceof JumpLureItem) || targets == null)
 			return;
 
-		selectorGui.render(event.getMatrixStack(), event.getPartialTicks(), targets, scrollDelta);
+		selectorGui.render(guiGraphics, partialTick, targets, scrollDelta);
 	}
 
 
 	@SubscribeEvent
-	public static void onMouseScroll(InputEvent.MouseScrollEvent event)
+	public static void onMouseScroll(InputEvent.MouseScrollingEvent event)
 	{
 		LocalPlayer player = Minecraft.getInstance().player;
 		if(player == null)

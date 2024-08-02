@@ -65,7 +65,7 @@ public class BlueprintItem extends Item
 
 	public BlueprintItem()
 	{
-		super(new Properties().stacksTo(16).tab(SplatcraftItemGroups.GROUP_GENERAL));
+		super(new Properties().stacksTo(16));
 	}
 
 	@OnlyIn(Dist.CLIENT)

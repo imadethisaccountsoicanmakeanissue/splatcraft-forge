@@ -361,7 +361,7 @@ public class RendererHandler
 
     public static Component getDisplayName(PlayerInfo info)
     {
-        return info.getTabListDisplayName() != null ? info.getTabListDisplayName().copy() : PlayerTeam.formatNameForTeam(info.getTeam(), new TextComponent(info.getProfile().getName()));
+        return info.getTabListDisplayName() != null ? info.getTabListDisplayName().copy() : PlayerTeam.formatNameForTeam(info.getTeam(), Component.literal(info.getProfile().getName()));
     }
 
 

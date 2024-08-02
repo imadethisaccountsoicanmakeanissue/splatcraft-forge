@@ -1,12 +1,11 @@
 package net.splatcraft.forge.items.weapons;
 
+import java.util.HashMap;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -21,7 +20,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -31,30 +29,31 @@ import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.settings.*;
+import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.BlasterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.DualieWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ShooterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SlosherWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> extends Item implements IColoredItem
 {
@@ -64,7 +63,7 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
     public boolean isSecret;
 
     public WeaponBaseItem(String settingsId) {
-        super(new Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_WEAPONS));
+        super(new Properties().stacksTo(1));
         SplatcraftItems.inkColoredItems.add(this);
         SplatcraftItems.weapons.add(this);
         this.settingsId = settingsId.contains(":") ? new ResourceLocation(settingsId) : new ResourceLocation(Splatcraft.MODID, settingsId);
@@ -202,19 +201,11 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
         } else
         {
-            tooltip.add(new TextComponent(""));
+            tooltip.add(Component.literal(""));
         }
 
         if(!stack.getOrCreateTag().getBoolean("HideTooltip"))
             getSettings(stack).addStatsToTooltip(tooltip, flag);
-    }
-
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list)
-    {
-        if (!isSecret) {
-            super.fillItemCategory(group, list);
-        }
     }
 
     @Override

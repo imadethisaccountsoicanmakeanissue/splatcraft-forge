@@ -45,7 +45,7 @@ public class InkColorCommand
     //TODO server friendly feedback message
     public static MutableComponent getColorName(int color)
     {
-        return new TextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
+        return Component.literal("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
     }
 
     private static int setColor(CommandSourceStack source, int color, Collection<ServerPlayer> targets)

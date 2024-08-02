@@ -35,7 +35,7 @@ public class StagePadItem extends Item implements IColoredItem
 {
 	public StagePadItem()
 	{
-		super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1));
+		super(new Properties().stacksTo(1));
 		SplatcraftItems.inkColoredItems.add(this);
 	}
 

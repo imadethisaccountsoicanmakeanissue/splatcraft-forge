@@ -78,7 +78,7 @@ public class StageCreationScreen extends AbstractStagePadScreen
 		{
 			if(canCreate())
 			{
-				SplatcraftPacketHandler.sendToServer(new CreateOrEditStagePacket(stageId, new TextComponent(this.stageName.getValue()), corner1, corner2, dimension));
+				SplatcraftPacketHandler.sendToServer(new CreateOrEditStagePacket(stageId, Component.literal(this.stageName.getValue()), corner1, corner2, dimension));
 
 				buttons.forEach(button -> button.active = false);
 				this.stageName.setFocus(false);

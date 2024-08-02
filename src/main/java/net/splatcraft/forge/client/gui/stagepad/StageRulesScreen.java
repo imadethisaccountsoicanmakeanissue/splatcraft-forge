@@ -169,7 +169,7 @@ public class StageRulesScreen extends AbstractStagePadScreen
 
 				ArrayList<FormattedCharSequence> lines = new ArrayList<>(font.split(Component.translatable(rule.getDescriptionId()), 150));
 
-				lines.add(new TextComponent(rule.getId().replace(Splatcraft.MODID + ".", "")).withStyle(ChatFormatting.YELLOW).getVisualOrderText());
+				lines.add(Component.literal(rule.getId().replace(Splatcraft.MODID + ".", "")).withStyle(ChatFormatting.YELLOW).getVisualOrderText());
 
 				String descriptionKey = rule.getDescriptionId() + ".description";
 

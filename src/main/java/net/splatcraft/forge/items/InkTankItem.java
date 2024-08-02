@@ -18,7 +18,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.models.inktanks.AbstractInkTankModel;
 import net.splatcraft.forge.data.SplatcraftTags;
@@ -26,7 +26,6 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.RollerItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -46,7 +45,7 @@ public class InkTankItem extends ColoredArmorItem {
     private AbstractInkTankModel model;
 
     public InkTankItem(String tagId, float capacity, ArmorMaterial material, Properties properties) {
-        super(material, EquipmentSlot.CHEST, properties);
+        super(material, Type.CHESTPLATE, properties);
         this.capacity = capacity;
         this.properties = properties;
 
@@ -56,7 +55,7 @@ public class InkTankItem extends ColoredArmorItem {
     }
 
     public InkTankItem(String tagId, float capacity, ArmorMaterial material) {
-        this(tagId, capacity, material, new Properties().tab(SplatcraftItemGroups.GROUP_WEAPONS).stacksTo(1));
+        this(tagId, capacity, material, new Properties().stacksTo(1));
 
     }
 
@@ -141,14 +140,16 @@ public class InkTankItem extends ColoredArmorItem {
 
     private static boolean initModels = false;
 
+
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         super.initializeClient(consumer);
-        consumer.accept(new IItemRenderProperties() {
+        consumer.accept(new IClientItemExtensions() 
+        {
             @Nullable
             @Override
-            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
                 if (!initModels) //i have NO idea where else to put this
                 {
                     initModels = true;
@@ -156,11 +157,11 @@ public class InkTankItem extends ColoredArmorItem {
                 }
 
                 if (!(itemStack.getItem() instanceof InkTankItem)) {
-                    return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+                    return IClientItemExtensions.super.getHumanoidArmorModel(entityLiving, itemStack, armorSlot, _default);
                 }
 
                 if (model == null) {
-                    return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+                    return IClientItemExtensions.super.getHumanoidArmorModel(entityLiving, itemStack, armorSlot, _default);
                 }
 
                 if (!itemStack.isEmpty()) {
@@ -188,7 +189,7 @@ public class InkTankItem extends ColoredArmorItem {
                     }
                 }
 
-                return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+                return IClientItemExtensions.super.getHumanoidArmorModel(entityLiving, itemStack, armorSlot, _default);
             }
         });
     }

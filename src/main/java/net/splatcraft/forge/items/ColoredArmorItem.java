@@ -8,9 +8,9 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
@@ -28,17 +27,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class ColoredArmorItem extends DyeableArmorItem implements IColoredItem
 {
-    public ColoredArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties properties)
+    public ColoredArmorItem(ArmorMaterial material, ArmorItem.Type armorType, Properties properties)
     {
-        super(material, slot, properties);
+        super(material, armorType, properties);
         SplatcraftItems.inkColoredItems.add(this);
 
         CauldronInteraction.WATER.put(this, CauldronInteraction.DYED_ITEM);
     }
 
-    public ColoredArmorItem(ArmorMaterial material, EquipmentSlot slot)
+    public ColoredArmorItem(ArmorMaterial material, ArmorItem.Type armorType)
     {
-        this( material, slot, new Properties().tab(SplatcraftItemGroups.GROUP_WEAPONS).stacksTo(1));
+        this( material, armorType, new Properties().stacksTo(1));
     }
 
     @Override
