@@ -91,21 +91,21 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
         if (!(entity instanceof Player))
             return;
         RollerWeaponSettings settings = getSettings(stack);
-        int startupTicks = entity.isOnGround() ? settings.swingTime : settings.flingTime;
+        int startupTicks = entity.onGround() ? settings.swingTime : settings.flingTime;
         if (getUseDuration(stack) - timeLeft < startupTicks)
         {
             //if (getInkAmount(entity, stack) > inkConsumption){
-            PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
+            PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.onGround());
             PlayerCooldown.setPlayerCooldown((Player) entity, cooldown);
             //} else
-            if (settings.isBrush && reduceInk(entity, this, entity.isOnGround() ? settings.swingConsumption : settings.flingConsumption, entity.isOnGround() ? settings.swingInkRecoveryCooldown : settings.flingInkRecoveryCooldown, timeLeft % 4 == 0)) {
+            if (settings.isBrush && reduceInk(entity, this, entity.onGround() ? settings.swingConsumption : settings.flingConsumption, entity.onGround() ? settings.swingInkRecoveryCooldown : settings.flingInkRecoveryCooldown, timeLeft % 4 == 0)) {
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.brushFling, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 int total = settings.rollSize * 2 + 1;
                 for (int i = 0; i < total; i++) {
                     InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), 1.6f, settings);
                     proj.setProjectileType(InkProjectileEntity.Types.ROLLER);
                     proj.trailSize = proj.getProjectileSize() * 0.5f;
-                    proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot() + (i - total / 2f) * 20, 0, entity.isOnGround() ? settings.swingProjectileSpeed : settings.flingProjectileSpeed, 0.05f);
+                    proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot() + (i - total / 2f) * 20, 0, entity.onGround() ? settings.swingProjectileSpeed : settings.flingProjectileSpeed, 0.05f);
                     proj.moveTo(proj.getX(), proj.getY() - entity.getEyeHeight() / 2f, proj.getZ());
                     level.addFreshEntity(proj);
                 }
@@ -242,7 +242,7 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
 
     @Override
     public boolean hasSpeedModifier(LivingEntity entity, ItemStack stack) {
-        if (entity instanceof Player && PlayerCooldown.hasPlayerCooldown((Player) entity) || !entity.getUseItem().equals(stack))
+        if (entity instanceof Player && PlayerCooldown.hasPlayerCooldown(entity) || !entity.getUseItem().equals(stack))
             return false;
         return super.hasSpeedModifier(entity, stack);
     }
@@ -255,7 +255,7 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
         int useTime = entity.getUseItemRemainingTicks() - entity.getUseItemRemainingTicks();
 
         if (enoughInk(entity, this, Math.min(settings.dashConsumption, settings.rollConsumption), 0, false)) {
-            if (entity instanceof Player && PlayerCooldown.hasPlayerCooldown((Player) entity))
+            if (entity instanceof Player && PlayerCooldown.hasPlayerCooldown(entity))
                 appliedMobility = settings.swingMobility;
             else
                 appliedMobility = Math.min(1, (float) useTime / (float) settings.dashTime) * (settings.dashMobility - settings.rollMobility) + settings.rollMobility;

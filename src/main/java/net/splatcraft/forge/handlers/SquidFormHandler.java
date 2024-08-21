@@ -37,13 +37,13 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
+import net.splatcraft.forge.registries.SplatcraftDamageTypes;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.InkDamageUtils;
 
 @Mod.EventBusSubscriber
 public class SquidFormHandler {
@@ -51,7 +51,7 @@ public class SquidFormHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingHurt(LivingHurtEvent event) {
-        if (InkDamageUtils.ENEMY_INK.equals(event.getSource()) && event.getEntityLiving().getHealth() <= 4)
+        if (event.getSource().is(SplatcraftDamageTypes.ENEMY_INK) && event.getEntity().getHealth() <= 4)
             event.setCanceled(true);
     }
 
@@ -60,15 +60,17 @@ public class SquidFormHandler {
         Player player = event.player;
 
         if (InkBlockUtils.onEnemyInk(player)) {
-            if (player.tickCount % 20 == 0 && player.getHealth() > 4 && player.level().getDifficulty() != Difficulty.PEACEFUL)
-                player.hurt(InkDamageUtils.ENEMY_INK, 2f);
+            if (player.tickCount % 20 == 0 && player.getHealth() > 4 && player.level().getDifficulty() != Difficulty.PEACEFUL) {
+                player.hurt(SplatcraftDamageTypes.of(player.level(), SplatcraftDamageTypes.ENEMY_INK), 2f);
+            }
             if (player.level().getRandom().nextFloat() < 0.7f) {
                 ColorUtils.addStandingInkSplashParticle(player.level(), player, 1);
             }
         }
 
-        if (SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0 && !MobEffectUtil.hasWaterBreathing(player))
-            player.hurt(InkDamageUtils.WATER, 8f);
+        if (SplatcraftGameRules.getLocalizedRule(player.level(), player.blockPosition(), SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0 && !MobEffectUtil.hasWaterBreathing(player)) {
+            player.hurt(SplatcraftDamageTypes.of(player.level(), SplatcraftDamageTypes.WATER), 8f);
+        }
 
         if(!PlayerInfoCapability.hasCapability(player))
             return;
@@ -160,7 +162,7 @@ public class SquidFormHandler {
     @SubscribeEvent
     public static void onLivingFall(LivingFallEvent event)
     {
-        if(event.getEntityLiving() instanceof ServerPlayer player && PlayerInfoCapability.get(player).isSquid())
+        if (event.getEntity() instanceof ServerPlayer player && PlayerInfoCapability.get(player).isSquid())
         {
             if(InkBlockUtils.canSquidHide(player))
             {
@@ -187,7 +189,7 @@ public class SquidFormHandler {
 
     @SubscribeEvent
     public static void playerVisibility(LivingEvent.LivingVisibilityEvent event) {
-        if (!(event.getEntityLiving() instanceof Player player)) {
+        if (!(event.getEntity() instanceof Player player)) {
             return;
         }
 
@@ -199,37 +201,37 @@ public class SquidFormHandler {
     @SubscribeEvent
     public static void onGameModeSwitch(PlayerEvent.PlayerChangeGameModeEvent event) {
         if (event.getNewGameMode() != GameType.SPECTATOR) return;
-        event.getPlayer().stopUsingItem();
-        PlayerInfoCapability.get(event.getEntityLiving()).setIsSquid(false);
-        SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerSetSquidS2CPacket(event.getPlayer().getUUID(), false), event.getPlayer());
+        event.getEntity().stopUsingItem();
+        PlayerInfoCapability.get(event.getEntity()).setIsSquid(false);
+        SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerSetSquidS2CPacket(event.getEntity().getUUID(), false), event.getEntity());
     }
 
     @SubscribeEvent
     public static void playerBreakSpeed(PlayerEvent.BreakSpeed event) {
-        if (PlayerInfoCapability.isSquid(event.getPlayer())) {
+        if (PlayerInfoCapability.isSquid(event.getEntity())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerAttackEntity(AttackEntityEvent event) {
-        if (PlayerInfoCapability.isSquid(event.getPlayer()))
+        if (PlayerInfoCapability.isSquid(event.getEntity()))
             event.setCanceled(true);
     }
 
     @SubscribeEvent
     public static void onPlayerInteract(PlayerInteractEvent event) {
-        if (PlayerInfoCapability.isSquid(event.getPlayer()) && event.isCancelable()) {
+        if (PlayerInfoCapability.isSquid(event.getEntity()) && event.isCancelable()) {
             event.setCanceled(true);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void onClientLivingTick(LivingEvent.LivingUpdateEvent event) {
-        if (!event.getEntity().level.isClientSide())
+    public static void onClientLivingTick(LivingEvent.LivingTickEvent event) {
+        if (!event.getEntity().level().isClientSide())
             return;
-        LivingEntity living = event.getEntityLiving();
+        LivingEntity living = event.getEntity();
         if (InkOverlayCapability.hasCapability(living)) {
             InkOverlayInfo info = InkOverlayCapability.get(living);
             Vec3 prev = info.getPrevPosOrDefault(living.position());
@@ -241,7 +243,7 @@ public class SquidFormHandler {
 
     @SubscribeEvent
     public static void onPlayerJump(LivingEvent.LivingJumpEvent event) {
-        if (!(event.getEntityLiving() instanceof Player player) || !PlayerInfoCapability.hasCapability(event.getEntityLiving())) {
+        if (!(event.getEntity() instanceof Player player) || !PlayerInfoCapability.hasCapability(event.getEntity())) {
             return;
         }
 

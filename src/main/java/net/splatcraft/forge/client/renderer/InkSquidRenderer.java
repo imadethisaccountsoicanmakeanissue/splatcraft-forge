@@ -2,14 +2,12 @@ package net.splatcraft.forge.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.SheepRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -21,6 +19,7 @@ import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.layer.InkSquidColorLayer;
 import net.splatcraft.forge.client.models.InkSquidModel;
 import net.splatcraft.forge.entities.InkSquidEntity;
+import org.joml.Matrix4f;
 
 public class InkSquidRenderer extends LivingEntityRenderer<LivingEntity, InkSquidModel> implements RenderLayerParent<LivingEntity, InkSquidModel>
 {
@@ -76,9 +75,9 @@ public class InkSquidRenderer extends LivingEntityRenderer<LivingEntity, InkSqui
 		Vec3 vec31 = squid.getLeashOffset();
 		double d1 = Math.cos(d0) * vec31.z + Math.sin(d0) * vec31.x;
 		double d2 = Math.sin(d0) * vec31.z - Math.cos(d0) * vec31.x;
-		double d3 = Mth.lerp((double)partialTicks, squid.xo, squid.getX()) + d1;
-		double d4 = Mth.lerp((double)partialTicks, squid.yo, squid.getY()) + vec31.y;
-		double d5 = Mth.lerp((double)partialTicks, squid.zo, squid.getZ()) + d2;
+		double d3 = Mth.lerp(partialTicks, squid.xo, squid.getX()) + d1;
+		double d4 = Mth.lerp(partialTicks, squid.yo, squid.getY()) + vec31.y;
+		double d5 = Mth.lerp(partialTicks, squid.zo, squid.getZ()) + d2;
 		poseStack.translate(d1, vec31.y, d2);
 		float f = (float)(vec3.x - d3);
 		float f1 = (float)(vec3.y - d4);

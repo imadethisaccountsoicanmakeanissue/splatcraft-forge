@@ -74,12 +74,11 @@ public class DualieItem extends WeaponBaseItem<DualieWeaponSettings>
 
     public static int getRollCooldown(ItemStack stack, int maxRolls, int rollCount)
     {
-        if (!(stack.getItem() instanceof DualieItem))
+        if (!(stack.getItem() instanceof DualieItem dualie))
         {
             return 0;
         }
 
-        DualieItem dualie = (DualieItem) stack.getItem();
         return rollCount >= maxRolls - 1 ? dualie.getSettings(stack).lastRollCooldown : dualie.getSettings(stack).rollCooldown;
     }
 
@@ -109,7 +108,7 @@ public class DualieItem extends WeaponBaseItem<DualieWeaponSettings>
 
         if (reduceInk(player, this, getInkForRoll(activeDualie), activeSettings.rollInkRecoveryCooldown, !player.level().isClientSide()))
         {
-            PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, (int) maxRolls, rollCount), player.getInventory().selected, player.getUsedItemHand(), activeSettings.canMoveAsTurret, true, false, player.isOnGround()));
+            PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, (int) maxRolls, rollCount), player.getInventory().selected, player.getUsedItemHand(), activeSettings.canMoveAsTurret, true, false, player.onGround()));
             if (!player.level().isClientSide()) {
                 player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundSource.PLAYERS, 0.7F, ((player.level().random.nextFloat() - player.level().getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 InkExplosion.createInkExplosion(player.level(), player, player.blockPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
@@ -268,18 +267,18 @@ public class DualieItem extends WeaponBaseItem<DualieWeaponSettings>
             }
 
             boolean hasCooldown = PlayerInfoCapability.get(entity).hasPlayerCooldown();
-            boolean onRollCooldown = entity.isOnGround() && hasCooldown && rollCount >= Math.max(2, maxRolls);
+            boolean onRollCooldown = entity.onGround() && hasCooldown && rollCount >= Math.max(2, maxRolls);
 
             if (offhandDualie.getItem() instanceof DualieItem) {
-                if (!entity.isOnGround() && !hasCooldown || entity.isOnGround())
+                if (!entity.onGround() && !hasCooldown || entity.onGround())
                 {
                     DualieWeaponSettings settings = ((DualieItem) offhandDualie.getItem()).getSettings(offhandDualie);
                     DualieWeaponSettings.FiringData firingData = onRollCooldown ? settings.turretData : settings.standardData;
 
-                    ((DualieItem) offhandDualie.getItem()).fireDualie(level, entity, offhandDualie, timeLeft + firingData.firingSpeed /2, entity.isOnGround() && hasCooldown);
+                    ((DualieItem) offhandDualie.getItem()).fireDualie(level, entity, offhandDualie, timeLeft + firingData.firingSpeed / 2, entity.onGround() && hasCooldown);
                 }
             }
-            if (!entity.isOnGround() && !hasCooldown || entity.isOnGround()) {
+            if (!entity.onGround() && !hasCooldown || entity.onGround()) {
                 fireDualie(level, entity, stack, timeLeft, onRollCooldown);
             }
         }
@@ -299,7 +298,7 @@ public class DualieItem extends WeaponBaseItem<DualieWeaponSettings>
                 {
                     InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), firingData.projectileSize, settings);
                     proj.isOnRollCooldown = onRollCooldown;
-                    proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), firingData.pitchCompensation, firingData.projectileSpeed, entity.isOnGround() ? firingData.groundInaccuracy : firingData.airInaccuracy);
+                    proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), firingData.pitchCompensation, firingData.projectileSpeed, entity.onGround() ? firingData.groundInaccuracy : firingData.airInaccuracy);
                     proj.setDualieStats(firingData);
                     level.addFreshEntity(proj);
                 }

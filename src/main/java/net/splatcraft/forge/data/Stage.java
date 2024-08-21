@@ -1,13 +1,18 @@
 package net.splatcraft.forge.data;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,8 +28,6 @@ import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class Stage implements Comparable<Stage> {
 	public static final TreeMap<String, GameRules.Key<GameRules.BooleanValue>> VALID_SETTINGS = new TreeMap<>();
@@ -251,7 +254,7 @@ public class Stage implements Comparable<Stage> {
 	public void updateSpawnPads(Level level)
 	{
 		spawnPadPositions.clear();
-		Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimID));
+        Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, dimID));
 
 		BlockPos blockpos2 = new BlockPos(Math.min(cornerA.getX(), cornerB.getX()), Math.min(cornerB.getY(), cornerA.getY()), Math.min(cornerA.getZ(), cornerB.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(cornerA.getX(), cornerB.getX()), Math.max(cornerB.getY(), cornerA.getY()), Math.max(cornerA.getZ(), cornerB.getZ()));
@@ -292,7 +295,7 @@ public class Stage implements Comparable<Stage> {
 	public HashMap<Integer, ArrayList<SpawnPadTileEntity>> getSpawnPads(Level level)
 	{
 		HashMap<Integer, ArrayList<SpawnPadTileEntity>> result = new HashMap<>();
-		Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimID));
+        Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, dimID));
 
 		for (BlockPos pos : spawnPadPositions)
 			if(stageLevel.getBlockEntity(pos) instanceof SpawnPadTileEntity pad)
@@ -307,7 +310,7 @@ public class Stage implements Comparable<Stage> {
 
 	public List<SpawnPadTileEntity> getAllSpawnPads(Level level)
 	{
-		Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimID));
+        Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, dimID));
 		return spawnPadPositions.stream().map(pos -> stageLevel.getBlockEntity(pos)).filter(te -> te instanceof SpawnPadTileEntity).map(te -> (SpawnPadTileEntity)te).toList();
 	}
 

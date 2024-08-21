@@ -3,8 +3,7 @@ package net.splatcraft.forge.client.handlers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import java.awt.TextComponent;
+import com.mojang.math.Axis;
 import java.util.HashMap;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
@@ -45,9 +44,9 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
@@ -102,7 +101,7 @@ public class RendererHandler
     {
         EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
 
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (player.isSpectator()) return;
 
         if (PlayerInfoCapability.isSquid(player))
@@ -164,20 +163,18 @@ public class RendererHandler
                 tickTime = 0;
             }
             tickTime = (tickTime + 1) % 10;
-            float yOff = -0.5f * ((time - event.getPartialTicks()) / maxTime);// - (tickTime/20f));
+            float yOff = -0.5f * ((time - event.getPartialTick()) / maxTime);// - (tickTime/20f));
 
-            if (player != null && player.getItemInHand(event.getHand()).getItem() instanceof WeaponBaseItem)
+            if (player.getItemInHand(event.getHand()).getItem() instanceof WeaponBaseItem)
             {
-                switch (((WeaponBaseItem) player.getItemInHand(event.getHand()).getItem()).getPose(player.getItemInHand(event.getHand())))
-                {
-                    case ROLL:
-                        yOff = -((time - event.getPartialTicks()) / maxTime) + 0.5f;
-                        break;
-                    case BRUSH:
-                        event.getPoseStack().mulPose(Vector3f.YN.rotation(yOff * ((player.getMainArm() == HumanoidArm.RIGHT ? event.getHand().equals(InteractionHand.MAIN_HAND) : event.getHand().equals(InteractionHand.OFF_HAND)) ? 1 : -1)));
-                        yOff = 0;
-                        break;
-                }
+                yOff = switch (((WeaponBaseItem<?>) player.getItemInHand(event.getHand()).getItem()).getPose(player.getItemInHand(event.getHand()))) {
+                    case ROLL -> -((time - event.getPartialTick()) / maxTime) + 0.5f;
+                    case BRUSH -> {
+                        event.getPoseStack().mulPose(Axis.YN.rotation(yOff * ((player.getMainArm() == HumanoidArm.RIGHT ? event.getHand().equals(InteractionHand.MAIN_HAND) : event.getHand().equals(InteractionHand.OFF_HAND)) ? 1 : -1)));
+                        yield 0;
+                    }
+                    default -> yOff;
+                };
             }
 
             event.getPoseStack().translate(0, yOff, 0);
@@ -217,11 +214,11 @@ public class RendererHandler
     private static void applyItemArmAttackTransform(PoseStack p_228399_1_, HumanoidArm p_228399_2_, float p_228399_3_) {
         int i = p_228399_2_ == HumanoidArm.RIGHT ? 1 : -1;
         float f = Mth.sin(p_228399_3_ * p_228399_3_ * (float)Math.PI);
-        p_228399_1_.mulPose(Vector3f.YP.rotationDegrees((float)i * (45.0F + f * -20.0F)));
+        p_228399_1_.mulPose(Axis.YP.rotationDegrees((float) i * (45.0F + f * -20.0F)));
         float f1 = Mth.sin(Mth.sqrt(p_228399_3_) * (float)Math.PI);
-        p_228399_1_.mulPose(Vector3f.ZP.rotationDegrees((float)i * f1 * -20.0F));
-        p_228399_1_.mulPose(Vector3f.XP.rotationDegrees(f1 * -80.0F));
-        p_228399_1_.mulPose(Vector3f.YP.rotationDegrees((float)i * -45.0F));
+        p_228399_1_.mulPose(Axis.ZP.rotationDegrees((float) i * f1 * -20.0F));
+        p_228399_1_.mulPose(Axis.XP.rotationDegrees(f1 * -80.0F));
+        p_228399_1_.mulPose(Axis.YP.rotationDegrees((float) i * -45.0F));
     }
 
     public static void renderItem(ItemStack itemStackIn, ItemDisplayContext context, boolean leftHand, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, BakedModel modelIn)
@@ -234,7 +231,7 @@ public class RendererHandler
             boolean flag = transformTypeIn == ItemTransforms.TransformType.GUI || transformTypeIn == ItemTransforms.TransformType.GROUND || transformTypeIn == ItemTransforms.TransformType.FIXED;
             if (itemStackIn.getItem() == Items.TRIDENT && flag)
             {
-                modelIn = itemRenderer.getItemModelShaper().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
+                modelIn = itemRenderer.getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(new ResourceLocation("trident")"minecraft:trident", "inventory"));
             }
 
             modelIn = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStackIn, modelIn, transformTypeIn, leftHand);
@@ -375,12 +372,8 @@ public class RendererHandler
 
     @SuppressWarnings("deprecation")
     @SubscribeEvent
-    public static void renderGui(RenderGameOverlayEvent.Pre event)
+    public static void renderGui(RenderGuiOverlayEvent.Pre event)
     {
-
-        if(!event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
-            return;
-
         Player player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || !PlayerInfoCapability.hasCapability(player))
         {
@@ -406,18 +399,18 @@ public class RendererHandler
                 if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getPlayerCharge() != null)
                 {
                     PlayerCharge playerCharge = PlayerInfoCapability.get(player).getPlayerCharge();
-                    float charge = lerp(playerCharge.prevCharge, playerCharge.charge, event.getPartialTicks());
+                    float charge = lerp(playerCharge.prevCharge, playerCharge.charge, event.getPartialTick());
 
                     if(charge > 1)
                     {
-                        RenderSystem.setShaderColor(1,1,1, playerCharge.getDischargeValue(event.getPartialTicks()) * 0.05f);
+                        RenderSystem.setShaderColor(1, 1, 1, playerCharge.getDischargeValue(event.getPartialTick()) * 0.05f);
                         Screen.blit(matrixStack, width / 2 - 15, height / 2 + 14, 30, 9, 88, 9, 30, 9, 256, 256);
 
                         if(Math.floor(charge) != charge)
                             charge = charge % 1f;
                     }
 
-                    RenderSystem.setShaderColor(1,1,1, playerCharge.getDischargeValue(event.getPartialTicks()));
+                    RenderSystem.setShaderColor(1, 1, 1, playerCharge.getDischargeValue(event.getPartialTick()));
                     Screen.blit(matrixStack, width / 2 - 15, height / 2 + 14, (int) (30 * charge), 9, 88, 9, (int) (30 * charge), 9, 256, 256);
                 }
                 RenderSystem.setShaderColor(1,1,1,1);
@@ -442,7 +435,7 @@ public class RendererHandler
         if (info.isSquid() || showLowInkWarning || !canUse) {
             //if (event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
             {
-                squidTime += event.getPartialTicks();
+                squidTime += event.getPartialTick();
 
                 if (showCrosshairInkIndicator)
                 {

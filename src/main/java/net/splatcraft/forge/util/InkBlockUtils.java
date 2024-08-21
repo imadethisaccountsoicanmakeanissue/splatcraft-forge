@@ -211,7 +211,7 @@ public class InkBlockUtils {
     }
 
     public static boolean canSquidHide(LivingEntity entity) {
-        return !entity.isSpectator() && (entity.isOnGround() || !entity.level().getBlockState(new BlockPos(entity.getX(), entity.getY() - 0.1, entity.getZ())).getBlock().equals(Blocks.AIR))
+        return !entity.isSpectator() && (entity.onGround() || !entity.level().getBlockState(new BlockPos(entity.getX(), entity.getY() - 0.1, entity.getZ())).getBlock().equals(Blocks.AIR))
                 && canSquidSwim(entity) || canSquidClimb(entity);
     }
 
@@ -245,7 +245,7 @@ public class InkBlockUtils {
     }
 
     public static boolean onEnemyInk(LivingEntity entity) {
-        if (!entity.isOnGround())
+        if (!entity.onGround())
             return false;
         BlockPos pos = getBlockStandingOnPos(entity);
 
